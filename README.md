@@ -36,7 +36,7 @@ This list will be updated as more and more users confirm different adapters to b
 * Close `Xcode`, `cd` into project directory and run `./compile [iDevice root password which you can leave empty]`.   
 * A file named `com.ra9stuff.LiNUZE.deb` will appear in the project directory.   
    
-Note that `compile` uploads the compiled `.deb` file to device with the given IP using the iDevice root password in the parameter. Make sure to change adjust them as well if you want your file to be uploaded to your device. You may leave the root password parameter empty, if you just want a `.deb` to be produced.
+Note that `compile` uploads the compiled `.deb` file to device with the given IP using the iDevice root password in the parameter. Make sure to adjust them if you want your file to be uploaded to your device. You may leave the root password parameter empty, if you just want a `.deb` to be produced.
 
 # Common Issues & Troubleshooting
 
