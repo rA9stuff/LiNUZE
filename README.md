@@ -48,3 +48,10 @@ Note that `compile` uploads the compiled `.deb` file to device with the given IP
 * Will Kellner
 
 You can [support the project](https://www.patreon.com/rA9stuff) to get your name displayed here.
+
+# Credits
+* [Libimobiledevice](https://libimobiledevice.org) for libimobiledevice.
+* [Serena](https://twitter.com/CoreSerena) and [Opa334](https://twitter.com/opa334dev) for general help with entitlements.
+* [Matty](https://twitter.com/moski_dev) for private testing and help.
+* [MasterMike](https://twitter.com/MasterMike88) for private testing.
+* [screenshots.pro](https://screenshots.pro) for screenshot templates.
