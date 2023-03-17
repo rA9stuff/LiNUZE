@@ -7,8 +7,7 @@ A jailbreak app to manage iDevices using jailbroken iDevices.
 <br/>
 <img align="right" src="https://i.imgur.com/bGJLzqv.png" width="130px" height="130px">
 ### Downloads
-* [Latest public release (Recommended)](https://github.com/rA9stuff/LiNUZE/releases)
-* [Latest nightly build (Experimental)](https://nightly.link/rA9stuff/LiNUZE/workflows/ci/master)
+* [Latest public release](https://github.com/rA9stuff/LiNUZE/releases)
 
 ### 🤍 Support this project
 * [Patreon](https://www.patreon.com/rA9stuff)
