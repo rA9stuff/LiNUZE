@@ -1,0 +1,41 @@
+#!/bin/bash
+if ps aux | grep -v grep | grep [L]iNUZE > /dev/null; then
+  killall LiNUZE
+fi
+if [ -d /var/mobile/Media/LiNUZE ]; then
+    rm -rf /var/mobile/Media/LiNUZE
+fi
+mkdir /var/mobile/Media/LiNUZE
+
+chmod 0777 /var/mobile/Media/LiNUZE
+chmod 6755 /Applications/LiNUZE.app/LiNUZE
+uicache -p /Applications/LiNUZE.app/ > /dev/null 2>&1
+chown root:wheel /Applications/LiNUZE.app/LiNUZE
+
+create_symlink() {
+  if [ -e "$1" -a ! -e "$2" ]; then
+    ln -s $1 $2
+    echo "Created symlink: $2 -> $1"
+  fi
+}
+
+create_symlink /usr/lib/libusbmuxd.6.dylib /usr/lib/libusbmuxd-2.0.6.dylib
+create_symlink /usr/lib/libusbmuxd-2.0.6.dylib /usr/lib/libusbmuxd.6.dylib
+create_symlink /usr/lib/libplist.3.dylib /usr/lib/libplist-2.0.3.dylib
+create_symlink /usr/lib/libplist-2.0.3.dylib /usr/lib/libplist.3.dylib
+create_symlink /usr/lib/libcrypto.3.dylib /usr/lib/libcrypto.1.1.dylib
+create_symlink /usr/lib/libcrypto.1.1.dylib /usr/lib/libcrypto.3.dylib
+create_symlink /usr/lib/libimobiledevice.6.dylib /usr/lib/libimobiledevice-1.0.6.dylib
+create_symlink /usr/lib/libimobiledevice-1.0.6.dylib /usr/lib/libimobiledevice.6.dylib
+create_symlink /usr/lib/libirecovery.3.dylib /usr/lib/libirecovery-1.0.3.dylib
+create_symlink /usr/lib/libirecovery-1.0.3.dylib /usr/lib/libirecovery.3.dylib
+
+ldid -S /Applications/LiNUZE.app/LiNUZE
+ldid -S/Applications/LiNUZE.app/Entitlements.plist /Applications/LiNUZE.app/
+ldid -S/Applications/LiNUZE.app/Entitlements.plist /usr/sbin/usbmuxd
+
+while ps aux | grep -v grep | grep usbmuxd > /dev/null; do
+  killall usbmuxd
+done
+uicache > /dev/null 2>&1
+exit 0

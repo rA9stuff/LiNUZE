@@ -1,0 +1,21 @@
+//
+//  NormalModeOperations.h
+//  LiNUZE
+//
+//  Created by rA9stuff on 26.02.2023.
+//  Copyright © 2023 rA9stuff. All rights reserved.
+//
+
+#ifndef NormalModeOperations_h
+#define NormalModeOperations_h
+#include <libimobiledevice/libirecovery.h>
+#include <libimobiledevice/libimobiledevice.h>
+#include <libimobiledevice/lockdown.h>
+#include <libimobiledevice-glue/utils.h>
+#include <libimobiledevice/common.h>
+
+int tryNormalModeConnection(int tries);
+int openNormalModeConnection(idevice_t* devptr, int tries);
+NSString* getDeviceName(idevice_t* device, lockdownd_client_t* lockdown);
+
+#endif /* NormalModeOperations_h */
