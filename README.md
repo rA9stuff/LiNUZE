@@ -1,5 +1,5 @@
 # LiNUZE
-A jailbreak app to manage iOS devices using jailbroken iOS devices.
+A jailbreak app to manage iDevices using jailbroken iDevices.
 
 [![CI](https://img.shields.io/github/actions/workflow/status/rA9stuff/LiNUZE/ci.yml?branch=master&style=for-the-badge)](https://github.com/rA9stuff/LiNUZE/actions)
 [![Stars](https://img.shields.io/github/stars/rA9stuff/linuze?style=for-the-badge)](https://github.com/rA9stuff/LiNUZE/stargazers)
@@ -7,8 +7,11 @@ A jailbreak app to manage iOS devices using jailbroken iOS devices.
 <br/>
 <img align="right" src="https://i.imgur.com/bGJLzqv.png" width="130px" height="130px">
 ### Downloads
-* [Latest notarized release (Recommended)](https://github.com/rA9stuff/LiNUZE/releases)
+* [Latest public release (Recommended)](https://github.com/rA9stuff/LiNUZE/releases)
 * [Latest nightly build (Experimental)](https://nightly.link/rA9stuff/LiNUZE/workflows/ci/master)
+
+### 🤍 Support this project
+* [Patreon](https://www.patreon.com/rA9stuff)
 
 # How to use?
 * Add https://ra9stuff.github.io/repo to your favorite package manager.
