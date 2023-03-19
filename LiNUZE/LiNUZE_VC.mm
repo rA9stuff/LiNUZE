@@ -455,9 +455,6 @@ UIStoryboard *storyboard;
 }
 
 
-
-
-bool aa = true;
 bool firstRun = true;
 bool didAlreadyStartMonitoring = false;
 bool sanityCheckPassed = false;
@@ -676,6 +673,20 @@ bool sanityCheckPassed = false;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    if (([self.restorationIdentifier isEqualToString:@"iPhoneUI"]) || ([self.restorationIdentifier isEqualToString:@"iPadUI"])) {
+        
+        PlistModifier* nightlyCheck = (PlistModifier*)malloc(sizeof(PlistModifier));
+        NSString* nightlyHashVal = nightlyCheck->getPref(@"nightlyHash");
+        
+        if (![nightlyHashVal isEqualToString:@""]) {
+           [_versionLabel setText: [@"LiNUZE nightly " stringByAppendingString:nightlyHashVal]];
+            _versionLabeliPad.text = [@"LiNUZE nightly " stringByAppendingString:nightlyHashVal];
+            _versionLabel.text = [_versionLabel.text stringByAppendingString:@" © rA9 2023"];
+            _versionLabeliPad.text = [_versionLabeliPad.text stringByAppendingString:@" © rA9 2023"];
+        }
+    }
+    
     static bool didSanityCheck = false;
     
     if (!didSanityCheck && [self monitorFileChanges] && sanityCheck() == 0)

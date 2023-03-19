@@ -237,7 +237,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e\nexecloc=\"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/LiNUZE\"\necho \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/LiNUZE\"\necho \"${PROJECT_DIR}\"\necho \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}\"\nldid -S\"${PROJECT_DIR}/LiNUZE/Entitlements.plist\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}\"\n#ln -s \"${BUILT_PRODUCTS_DIR}/libusbmuxd.6.dylib\" \"${BUILT_PRODUCTS_DIR}/libusbmuxd-2.0.6.dylib\"\n#ln -s \"${BUILT_PRODUCTS_DIR}/libplist.3.dylib\" \"${BUILT_PRODUCTS_DIR}/libplist-2.0.3.dylib\"\n";
+			shellScript = "set -e\nexecloc=\"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/LiNUZE\"\necho \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/LiNUZE\"\necho \"${PROJECT_DIR}\"\necho \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}\"\nldid -S\"${PROJECT_DIR}/LiNUZE/Entitlements.plist\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

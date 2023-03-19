@@ -56,6 +56,7 @@
 @property (retain, nonatomic) IBOutlet UIButton *iphone_logview_dismissButton;
 @property (retain, nonatomic) IBOutlet UILabel *logwindow_label;
 @property (retain, nonatomic) IBOutlet UIStackView *logview_hstack;
+@property (retain, nonatomic) IBOutlet UILabel *versionLabeliPad;
 
 @end
 

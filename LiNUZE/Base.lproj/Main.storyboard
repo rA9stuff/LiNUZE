@@ -606,6 +606,7 @@
                         <outlet property="leftVStack" destination="DzS-d8-v1x" id="Rkf-1M-kgf"/>
                         <outlet property="logScrollView" destination="tny-Mc-Cam" id="vMv-xR-b8S"/>
                         <outlet property="statusContainer" destination="qrh-ii-cb7" id="a8d-mC-UVK"/>
+                        <outlet property="versionLabeliPad" destination="bM6-jf-rLu" id="4Wu-az-Sdw"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3CN-c0-80I" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -907,10 +908,10 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="cqp-oe-TMU"/>
-        <segue reference="Ba2-Y6-uYs"/>
-        <segue reference="onR-kc-mB7"/>
-        <segue reference="Uug-27-Hcy"/>
+        <segue reference="NJb-fJ-Vum"/>
+        <segue reference="6Lx-1Q-sZo"/>
+        <segue reference="Xks-hP-F4X"/>
+        <segue reference="2eV-z4-TaO"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="gearshape" width="2612" height="2611"/>

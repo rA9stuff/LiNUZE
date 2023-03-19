@@ -1,5 +1,4 @@
 #!/bin/sh
-PASS=$1
 sudo rm -rf ./LiNUZE.app
 sudo rm -rf ./Build/Release-iphoneos/LiNUZE.app
 sudo rm -rf ./com.rA9stuff.LiNUZE
