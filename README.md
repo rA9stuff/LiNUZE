@@ -1,7 +1,7 @@
 # LiNUZE
 A jailbreak app to manage iDevices using jailbroken iDevices.
 
-[![CI](https://img.shields.io/github/actions/workflow/status/rA9stuff/LiNUZE/ci.yml?branch=master&style=for-the-badge)](https://github.com/rA9stuff/LiNUZE/actions)
+[![CI](https://img.shields.io/github/actions/workflow/status/rA9stuff/LiNUZE/ci.yml?branch=main&style=for-the-badge)](https://github.com/rA9stuff/LiNUZE/actions)
 [![Stars](https://img.shields.io/github/stars/rA9stuff/linuze?style=for-the-badge)](https://github.com/rA9stuff/LiNUZE/stargazers)
 [![Licence](https://img.shields.io/github/license/rA9stuff/linuze?style=for-the-badge)](https://github.com/rA9stuff/LiNUZE/blob/master/LICENSE.md)
 <br/>
