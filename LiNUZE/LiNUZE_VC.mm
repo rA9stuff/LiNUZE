@@ -9,8 +9,6 @@
 #import "LiNUZE_VC.h"
 #import "LDD.h"
 #import "NSTask.h"
-#import <pthread/pthread.h>
-#include <thread.h>
 #import <sys/utsname.h>
 #import <IOKitLib.h>
 #import <IOKit/usb/IOUSBLib.h>
@@ -19,7 +17,7 @@
 #include <libimobiledevice/libimobiledevice.h>
 #include <libimobiledevice/lockdown.h>
 #include <libimobiledevice-glue/utils.h>
-#include <libimobiledevice/common.h>
+#include <common.h>
 #import <objc/runtime.h>
 
 #define background_thread dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^

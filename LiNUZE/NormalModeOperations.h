@@ -8,11 +8,11 @@
 
 #ifndef NormalModeOperations_h
 #define NormalModeOperations_h
-#include <libimobiledevice/libirecovery.h>
+#include <libirecovery/include/libirecovery.h>
 #include <libimobiledevice/libimobiledevice.h>
 #include <libimobiledevice/lockdown.h>
 #include <libimobiledevice-glue/utils.h>
-#include <libimobiledevice/common.h>
+#include <common.h>
 
 int tryNormalModeConnection(int tries);
 int openNormalModeConnection(idevice_t* devptr, int tries);

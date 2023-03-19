@@ -1,0 +1,44 @@
+name: LiNUZE
+
+on:
+  push:
+      branches: [ main ]
+  pull_request:
+      branches: [ main ]
+
+jobs:
+
+  build-iphoneos:
+    runs-on: macos-12
+    steps:
+    - name: envdetails
+      run: ls && echo && pwd
+    - uses: actions/checkout@v2
+    - name: envdetails
+      run: ls && echo && pwd
+    - name: gethash
+      run: git_hash=${GITHUB_SHA::6} && echo $git_hash
+    - name: cleanup
+      run: rm -rf __MACOSX/ build
+    - name: download libs
+      run: cd CI_scripts && chmod +x download_libs.sh && ./download_libs.sh
+    - name: download libimobiledevice
+      run: cd CI_scripts && chmod +x download_headers.sh && ./download_headers.sh
+    - name: regrets
+      run: mkdir IOKit && cd IOKit && cp -r /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/System/Library/Frameworks/IOKit.framework/Versions/A/Headers/ .
+    - name: trollage
+      run: rm -rf IOKit/IOKitLib.h && cp IOKitLib.h IOKit
+    - name: env
+      run: pwd && ls && cat IOKit/IOKitLib.h
+    - name: install ldid
+      run: brew install ldid
+    - name: install dpkg
+      run: brew install dpkg
+    - name: build
+      run: ./compile
+    - name: upload LiNUZE deb
+      id: upload_LiNUZE
+      uses: actions/upload-artifact@v2
+      with:
+        name: "com.rA9stuff.LiNUZE.deb"
+        path: /Users/runner/work/LiNUZE/LiNUZE/com.ra9stuff.LiNUZE.deb

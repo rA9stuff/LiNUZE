@@ -11,11 +11,11 @@
 #include "LiNUZE_VC.h"
 #include "NormalModeOperations.h"
 #include "NSTask.h"
-#include <libimobiledevice/libirecovery.h>
+#include <libirecovery.h>
 #include <libimobiledevice/libimobiledevice.h>
 #include <libimobiledevice/lockdown.h>
 #include <libimobiledevice-glue/utils.h>
-#include <libimobiledevice/common.h>
+#include <common.h>
 
 extern bool restoreStarted;
 LDD** masterDFUDevice;
