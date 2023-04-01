@@ -13,3 +13,4 @@ mv LiNUZE.app com.rA9stuff.LiNUZE/Applications/
 rm -rf ./Index
 find . -type f -name .DS_Store -delete && xattr -cr *
 dpkg-deb -Zgzip -b com.rA9stuff.LiNUZE com.ra9stuff.LiNUZE.deb
+rm -rf com.ra9stuff.LiNUZE
