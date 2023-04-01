@@ -495,8 +495,8 @@
 					"$(PROJECT_DIR)/CI_scripts/headers/libimobiledevice/include",
 					"/Library/Developer/CommandLineTools/SDKs/MacOSX*.sdk/System/Library/Frameworks/IOKit.framework/Versions/A/Headers",
 					"/Library/Developer/CommandLineTools/SDKs/MacOSX*.sdk/System/Library/Frameworks/Kernel.framework/Versions/A/Headers/",
-					"$(HOME)/ipwnder_lite/ra1npoc/src/include",
-					"$(HOME)/ipwnder_lite/include",
+					"$(PROJECT_DIR)/ipwnder_lite/ra1npoc/src/include",
+					"$(PROJECT_DIR)/ipwnder_lite/include",
 				);
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(HOME)/Desktop/limd_headers";
@@ -569,8 +569,8 @@
 					"$(PROJECT_DIR)/CI_scripts/headers/libimobiledevice/include",
 					"/Library/Developer/CommandLineTools/SDKs/MacOSX*.sdk/System/Library/Frameworks/IOKit.framework/Versions/A/Headers",
 					"/Library/Developer/CommandLineTools/SDKs/MacOSX*.sdk/System/Library/Frameworks/Kernel.framework/Versions/A/Headers/",
-					"$(HOME)/ipwnder_lite/ra1npoc/src/include",
-					"$(HOME)/ipwnder_lite/include",
+					"$(PROJECT_DIR)/ipwnder_lite/ra1npoc/src/include",
+					"$(PROJECT_DIR)/ipwnder_lite/include",
 				);
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(HOME)/Desktop/limd_headers";
