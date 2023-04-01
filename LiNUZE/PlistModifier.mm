@@ -11,7 +11,7 @@
 
 void PlistModifier::modifyPref(NSString* key, NSString* val) {
     
-    NSString* preferencePlist = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/LiNUZPrefs.plist"];
+    NSString* preferencePlist = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/LiNUZEPrefs.plist"];
     NSMutableDictionary* dict = [[NSMutableDictionary alloc] initWithContentsOfFile:preferencePlist];
     [dict setValue:val forKey: key];
     [dict writeToFile:preferencePlist atomically:YES];
@@ -20,7 +20,7 @@ void PlistModifier::modifyPref(NSString* key, NSString* val) {
 
 NSString* PlistModifier::getPref(NSString* key) {
     
-    NSString *preferencePlist = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/LiNUZPrefs.plist"];
+    NSString *preferencePlist = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/LiNUZEPrefs.plist"];
     NSDictionary *dict=[[NSDictionary alloc] initWithContentsOfFile:preferencePlist];
     return dict[key];
 }
