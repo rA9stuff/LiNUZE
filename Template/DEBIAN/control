@@ -1,5 +1,5 @@
-Package: com.ra9stuff.LiNUZE
-Name: LiNUZE
+Package: com.ra9stuff.LiNUZE.nightly
+Name: LiNUZE Nightly
 Version: 0.DEV-BETA
 Architecture: iphoneos-arm
 Description: LiNUZE allows managing iOS devices using jailbroken iOS devices.
