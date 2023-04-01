@@ -14,7 +14,7 @@
 		6437177229B682840061D4D0 /* Landing.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6437177129B682840061D4D0 /* Landing.mm */; };
 		643799FA29990FA700607ECE /* USBUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = 643799F929990FA700607ECE /* USBUtils.mm */; };
 		6446AFD729BE3DD70003645F /* Entitlements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6446AFD629BE3DD70003645F /* Entitlements.plist */; };
-		64D0FA4A29A4C39B00553AFB /* LiNUZPrefs.plist in Resources */ = {isa = PBXBuildFile; fileRef = 64D0FA4929A4C39B00553AFB /* LiNUZPrefs.plist */; };
+		64D0FA4A29A4C39B00553AFB /* LiNUZEPrefs.plist in Resources */ = {isa = PBXBuildFile; fileRef = 64D0FA4929A4C39B00553AFB /* LiNUZEPrefs.plist */; };
 		64D0FA4C29A4C3D400553AFB /* PlistModifier.mm in Sources */ = {isa = PBXBuildFile; fileRef = 64D0FA4B29A4C3D400553AFB /* PlistModifier.mm */; };
 		64DD20E829D8C8AF007E3C48 /* limera1n.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 64DD20E129D8C8AF007E3C48 /* limera1n.a */; };
 		64DD20E929D8C8AF007E3C48 /* common.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 64DD20E229D8C8AF007E3C48 /* common.a */; };
@@ -54,7 +54,7 @@
 		643799F829990FA700607ECE /* USBUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = USBUtils.h; sourceTree = "<group>"; };
 		643799F929990FA700607ECE /* USBUtils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = USBUtils.mm; sourceTree = "<group>"; };
 		6446AFD629BE3DD70003645F /* Entitlements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Entitlements.plist; sourceTree = "<group>"; };
-		64D0FA4929A4C39B00553AFB /* LiNUZPrefs.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = LiNUZPrefs.plist; sourceTree = "<group>"; };
+		64D0FA4929A4C39B00553AFB /* LiNUZEPrefs.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = LiNUZEPrefs.plist; sourceTree = "<group>"; };
 		64D0FA4B29A4C3D400553AFB /* PlistModifier.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PlistModifier.mm; sourceTree = "<group>"; };
 		64D0FA4D29A4C3E000553AFB /* PlistModifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlistModifier.h; sourceTree = "<group>"; };
 		64DD20E129D8C8AF007E3C48 /* limera1n.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = limera1n.a; path = CI_scripts/libs/limera1n.a; sourceTree = "<group>"; };
@@ -169,7 +169,7 @@
 				A1A3070728A9A1B500275F72 /* LaunchScreen.storyboard */,
 				A1A3070A28A9A1B500275F72 /* Info.plist */,
 				6423270128ABB7140086C961 /* SFMonoRegular.otf */,
-				64D0FA4929A4C39B00553AFB /* LiNUZPrefs.plist */,
+				64D0FA4929A4C39B00553AFB /* LiNUZEPrefs.plist */,
 				A1A3070B28A9A1B500275F72 /* main.m */,
 				64020DBA28AAF813003E7436 /* LDD.h */,
 				64020DB928AAF813003E7436 /* LDD.mm */,
@@ -252,7 +252,7 @@
 				A1A3070928A9A1B500275F72 /* LaunchScreen.storyboard in Resources */,
 				A1A3070628A9A1B500275F72 /* Assets.xcassets in Resources */,
 				A1A3070428A9A1B300275F72 /* Main.storyboard in Resources */,
-				64D0FA4A29A4C39B00553AFB /* LiNUZPrefs.plist in Resources */,
+				64D0FA4A29A4C39B00553AFB /* LiNUZEPrefs.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
