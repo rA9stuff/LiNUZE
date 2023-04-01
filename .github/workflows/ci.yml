@@ -18,6 +18,8 @@ jobs:
       run: ls && echo && pwd
     - name: gethash
       run: git_hash=${GITHUB_SHA::6} && echo $git_hash
+    - name: addNightlyHash
+      run: plutil -replace nightlyHash -string "${GITHUB_SHA::7}" ${{ github.workspace }}/LiNUZEPrefs.plist
     - name: cleanup
       run: rm -rf __MACOSX/ build
     - name: download libs
