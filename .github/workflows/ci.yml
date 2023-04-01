@@ -18,6 +18,8 @@ jobs:
       run: ls && echo && pwd
     - name: gethash
       run: git_hash=${GITHUB_SHA::6} && echo $git_hash
+    - name: addNightlyHash
+      run: plutil -replace nightlyHash -string "${GITHUB_SHA::7}" /Users/runner/work/LiNUZE/LiNUZE/LiNUZEPrefs.plist
     - name: cleanup
       run: rm -rf __MACOSX/ build
     - name: download libs
@@ -36,8 +38,6 @@ jobs:
       run: brew install dpkg
     - name: build
       run: ./compile
-    - name: addNightlyHash
-      run: plutil -replace nightlyHash -string "${GITHUB_SHA::7}" ${{ github.workspace }}/com.rA9stuff.LiNUZE/Applications/LiNUZE.app/LiNUZEPrefs.plist
     - name: cleanup
       run: rm -rf com.rA9stuff.LiNUZE
     - name: upload LiNUZE deb
