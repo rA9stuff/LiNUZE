@@ -19,6 +19,9 @@
 #include <libimobiledevice-glue/utils.h>
 #include <common.h>
 #import <objc/runtime.h>
+#import "exploit_wrappers.h"
+#import <mach/mach.h>
+
 
 #define background_thread dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^
 #define main_thread dispatch_async(dispatch_get_main_queue(), ^()
@@ -30,8 +33,11 @@ idevice_t* normaldevptr = NULL;
 lockdownd_client_t* lockdownptr = NULL;
 NSMutableAttributedString* fulllogtext = [[NSMutableAttributedString alloc] init];
 UITextView* iphone_logview_addr;
+UITextView* ipad_logview_addr;
 NSString* normaldevname = NULL;
-
+ViewController* ipad_vc = NULL;
+ViewController* iphone_vc = NULL;
+extern NSPipe* lnpipe;
 
 
 @interface ViewController ()
@@ -39,6 +45,122 @@ NSString* normaldevname = NULL;
 @end
 
 @implementation ViewController
+
+- (void)startMonitoringStdout {
+    setbuf(stdout, NULL);
+    NSPipe* pipe = [NSPipe pipe];
+    NSFileHandle* pipeReadHandle = [pipe fileHandleForReading];
+    dup2([[pipe fileHandleForWriting] fileDescriptor], fileno(stdout));
+    dispatch_source_t source = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, [pipeReadHandle fileDescriptor], 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
+    dispatch_source_set_event_handler(source, ^{
+        void* data = malloc(4096);
+        ssize_t readResult = 0;
+        do {
+            errno = 0;
+            readResult = read([pipeReadHandle fileDescriptor], data, 4096);
+        } while (readResult == -1 && errno == EINTR);
+        
+        if (readResult > 0) {
+            dispatch_async(dispatch_get_main_queue(),^{
+                NSString *stdOutString = [[NSString alloc] initWithBytesNoCopy:data length:readResult encoding:NSUTF8StringEncoding freeWhenDone:YES];
+                
+                // beautify ipwnder_lite output
+                UIColor* outputcolor = [UIColor whiteColor];
+                
+                if ([stdOutString containsString:@"[31m"]) {
+                    outputcolor = [UIColor redColor];
+                }
+                else if ([stdOutString containsString:@"[32m"]) {
+                    outputcolor = [UIColor greenColor];
+                }
+                stdOutString = [[[stdOutString stringByReplacingOccurrencesOfString:@"[31m" withString:@""]
+                                        stringByReplacingOccurrencesOfString:@"[32m" withString:@""]
+                                        stringByReplacingOccurrencesOfString:@"[39m" withString:@""];
+
+                [self infoLog:stdOutString color:outputcolor];
+            });
+        }
+        else {
+            free(data);
+        }
+    });
+    dispatch_resume(source);
+}
+
+float cpu_usage()
+{
+    kern_return_t kr;
+    task_info_data_t tinfo;
+    mach_msg_type_number_t task_info_count;
+
+    task_info_count = TASK_INFO_MAX;
+    kr = task_info(mach_task_self(), TASK_BASIC_INFO, (task_info_t)tinfo, &task_info_count);
+    if (kr != KERN_SUCCESS) {
+        return -1;
+    }
+
+    task_basic_info_t      basic_info;
+    thread_array_t         thread_list;
+    mach_msg_type_number_t thread_count;
+
+    thread_info_data_t     thinfo;
+    mach_msg_type_number_t thread_info_count;
+
+    thread_basic_info_t basic_info_th;
+    uint32_t stat_thread = 0; // Mach threads
+
+    basic_info = (task_basic_info_t)tinfo;
+
+    // get threads in the task
+    kr = task_threads(mach_task_self(), &thread_list, &thread_count);
+    if (kr != KERN_SUCCESS) {
+        return -1;
+    }
+    if (thread_count > 0)
+        stat_thread += thread_count;
+
+    long tot_sec = 0;
+    long tot_usec = 0;
+    float tot_cpu = 0;
+    int j;
+
+    for (j = 0; j < (int)thread_count; j++)
+    {
+        thread_info_count = THREAD_INFO_MAX;
+        kr = thread_info(thread_list[j], THREAD_BASIC_INFO,
+                         (thread_info_t)thinfo, &thread_info_count);
+        if (kr != KERN_SUCCESS) {
+            return -1;
+        }
+
+        basic_info_th = (thread_basic_info_t)thinfo;
+
+        if (!(basic_info_th->flags & TH_FLAGS_IDLE)) {
+            tot_sec = tot_sec + basic_info_th->user_time.seconds + basic_info_th->system_time.seconds;
+            tot_usec = tot_usec + basic_info_th->user_time.microseconds + basic_info_th->system_time.microseconds;
+            tot_cpu = tot_cpu + basic_info_th->cpu_usage / (float)TH_USAGE_SCALE * 100.0;
+        }
+
+    } // for each thread
+
+    kr = vm_deallocate(mach_task_self(), (vm_offset_t)thread_list, thread_count * sizeof(thread_t));
+    assert(kr == KERN_SUCCESS);
+
+    return tot_cpu;
+}
+
+- (void)monitorCPUusage {
+    background_thread {
+        while (true) {
+            float usage = cpu_usage();
+            main_thread {
+                [[self cpu_usage_label] setText:[NSString stringWithFormat:@"cpu usage: %g%%", usage]];
+            });
+            sleep(1);
+        }
+    });
+}
+
 
 int checkDaemon() {
     
@@ -65,7 +187,6 @@ int sanityCheck() {
     
     const char* filePaths[] = {
         "/var/mobile/Media/LiNUZE",
-        "/var/mobile/Media/LiNUZE/LiNUZE_stdoutwrapper.txt",
         "/usr/lib/libimobiledevice-1.0.6.dylib",
         "/usr/lib/libcrypto.1.1.dylib",
         "/usr/lib/libirecovery.3.dylib",
@@ -105,20 +226,15 @@ NSFileHandle *fh;
         NSDictionary *attrs = @{ NSForegroundColorAttributeName : color, NSFontAttributeName : font};
         NSAttributedString *attrStr = [[NSAttributedString alloc] initWithString:logtext attributes:attrs];
         [fulllogtext appendAttributedString:attrStr];
-        //[[self -> _ipad_logview textStorage] setAttributedString: @"a"];
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-        NSString *documentsDirectory = [paths objectAtIndex:0];
-        //NSString *filePath = [documentsDirectory stringByAppendingPathComponent:@"LiNUZE_stdoutwrapper.txt"];
         NSString *logFilePath = @"/var/mobile/Media/LiNUZE/LiNUZE_Log.txt";
         NSError *error;
         if (![fulllogtext.string writeToFile:logFilePath atomically:YES encoding:NSUTF8StringEncoding error:&error]) {
             [self updateStatus: [NSString stringWithFormat:@"Failed to write to file: %@", error.localizedDescription] color:[UIColor whiteColor]];
         }
-        
         [[iphone_logview_addr textStorage] setAttributedString:fulllogtext];
-        [[_ipad_logview textStorage] setAttributedString:fulllogtext];
+        [[ipad_logview_addr textStorage] setAttributedString:fulllogtext];
         [iphone_logview_addr scrollRangeToVisible:NSMakeRange([[iphone_logview_addr text] length], 0)];
-        [_ipad_logview scrollRangeToVisible:NSMakeRange([[_ipad_logview text] length], 0)];
+        [ipad_logview_addr scrollRangeToVisible:NSMakeRange([[ipad_logview_addr text] length], 0)];
     });
 }
 
@@ -131,10 +247,10 @@ NSFileHandle *fh;
         NSDictionary *attrs = @{ NSForegroundColorAttributeName : color, NSFontAttributeName : font};
         NSAttributedString *attrStr = [[NSAttributedString alloc] initWithString:logtext attributes:attrs];
         [fulllogtext appendAttributedString:attrStr];
-        [[self -> _ipad_logview textStorage] setAttributedString:fulllogtext];
-        [[self -> _devInfoBox textStorage] setAttributedString:fulllogtext];
-        [self -> _devInfoBox scrollRangeToVisible:NSMakeRange([[self->_devInfoBox text] length], 0)];
-        [self -> _ipad_logview scrollRangeToVisible:NSMakeRange([[self->_ipad_logview text] length], 0)];
+        [[ipad_logview_addr textStorage] setAttributedString:fulllogtext];
+        [[iphone_logview_addr textStorage] setAttributedString:fulllogtext];
+        [iphone_logview_addr scrollRangeToVisible:NSMakeRange([[iphone_logview_addr text] length], 0)];
+        [ipad_logview_addr scrollRangeToVisible:NSMakeRange([[ipad_logview_addr text] length], 0)];
     });
 }
 
@@ -163,6 +279,8 @@ NSString* NSNonce(unsigned char *buf, size_t len) {
     for (int i = 0; i < len; i++) {
         [nonce appendFormat:@"%02x", buf[i]];
     }
+    if ([nonce isEqualToString: @""])
+        return @" N/A";
     return nonce;
 }
 
@@ -188,25 +306,17 @@ NSString* NSNonce(unsigned char *buf, size_t len) {
 }
 
 - (void) gentlyDeactivateButtons {
-    _buttonContainer.userInteractionEnabled = NO;
-    _bc2.userInteractionEnabled = NO;
-    _bc3.userInteractionEnabled = NO;
-    _bc4.userInteractionEnabled = NO;
-    _iPadBC1.userInteractionEnabled = NO;
-    _iPadBC2.userInteractionEnabled = NO;
-    _iPadBC3.userInteractionEnabled = NO;
-    _iPadBC4.userInteractionEnabled = NO;
+    _ipad_upper_container.userInteractionEnabled    = NO;
+    _ipad_bottom_container.userInteractionEnabled   = NO;
+    _iphone_upper_container.userInteractionEnabled  = NO;
+    _iphone_bottom_container.userInteractionEnabled = NO;
     background_thread {
         for (double i = 1.0; i > 0.30; i-=0.01) {
             main_thread {
-                _buttonContainer.alpha = i;
-                _bc2.alpha = i;
-                _bc3.alpha = i;
-                _bc4.alpha = i;
-                _iPadBC1.alpha = i;
-                _iPadBC2.alpha = i;
-                _iPadBC3.alpha = i;
-                _iPadBC4.alpha = i;
+                _ipad_upper_container.alpha    = i;
+                _ipad_bottom_container.alpha   = i;
+                _iphone_upper_container.alpha  = i;
+                _iphone_bottom_container.alpha = i;
             });
             usleep(2000);
         }
@@ -217,26 +327,18 @@ NSString* NSNonce(unsigned char *buf, size_t len) {
     background_thread {
         for (double i = 0.30; i < 1.0; i+=0.01) {
             main_thread {
-                _buttonContainer.alpha = i;
-                _bc2.alpha = i;
-                _bc3.alpha = i;
-                _bc4.alpha = i;
-                _iPadBC1.alpha = i;
-                _iPadBC2.alpha = i;
-                _iPadBC3.alpha = i;
-                _iPadBC4.alpha = i;
+                _ipad_upper_container.alpha    = i;
+                _ipad_bottom_container.alpha   = i;
+                _iphone_upper_container.alpha  = i;
+                _iphone_bottom_container.alpha = i;
             });
             usleep(2000);
         }
     });
-    _buttonContainer.userInteractionEnabled = YES;
-    _bc2.userInteractionEnabled = YES;
-    _bc3.userInteractionEnabled = YES;
-    _bc4.userInteractionEnabled = YES;
-    _iPadBC1.userInteractionEnabled = YES;
-    _iPadBC2.userInteractionEnabled = YES;
-    _iPadBC3.userInteractionEnabled = YES;
-    _iPadBC4.userInteractionEnabled = YES;
+    _ipad_upper_container.userInteractionEnabled    = YES;
+    _ipad_bottom_container.userInteractionEnabled   = YES;
+    _iphone_upper_container.userInteractionEnabled  = YES;
+    _iphone_bottom_container.userInteractionEnabled = YES;
 }
 
 
@@ -264,7 +366,8 @@ NSString* NSNonce(unsigned char *buf, size_t len) {
     [self infoLog: [NSString stringWithFormat:@"%@\n", NSCPID(&devptr -> getDevInfo() -> cpid)] color:[UIColor whiteColor]];
     [self infoLog:@"Pwned: " color:[UIColor cyanColor]];
     if (devptr -> checkPwn()) {
-        [self infoLog: @"Yes\n\n" color:[UIColor whiteColor]];
+        
+        [self infoLog: [NSString stringWithFormat:@"Yes (%s)\n\n", devptr -> getPWNDTag()] color:[UIColor whiteColor]];
     }
     else {
         [self infoLog: @"No\n\n" color:[UIColor whiteColor]];
@@ -279,36 +382,12 @@ UIViewController* iPadVCGlobal;
 UIViewController* iPhoneVCGlobal;
 UIStoryboard *storyboard;
 
-
-- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
-    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
-/*
-    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-    if (UIInterfaceOrientationIsPortrait(orientation)) {
-        // Switch to iPhoneUI
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-        UIViewController *iPhoneUI = [storyboard instantiateViewControllerWithIdentifier:@"iPhoneUI"];
-        UINavigationController *navController = self.navigationController;
-        [navController popToRootViewControllerAnimated:NO];
-        [navController pushViewController:iPhoneUI animated:YES];
-        [[self navigationItem] setHidesBackButton:YES];
-    }
-    else {
-        // Switch to iPadUI
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-        UIViewController *iPadUI = [storyboard instantiateViewControllerWithIdentifier:@"iPadUI"];
-        UINavigationController *navController = self.navigationController;
-        [navController popToRootViewControllerAnimated:NO];
-        [navController pushViewController:iPadUI animated:YES];
-        [[self navigationItem] setHidesBackButton:YES];
-    }*/
-}
-
 - (void)displayCorrectBasicInterface:(id)sender devptr:(nullable LDD*)devptr normaldevname:(NSString* _Nullable)normalDeviceName VC:(UIViewController*)VC {
     
-    UIImageView *iphoneImage = [self.statusContainer viewWithTag:1];
-    UIImageView *statusImage = [self.statusContainer viewWithTag:2];
-    UILabel* statusLabel = [self.statusContainer viewWithTag:3];
+    UIImageView *iphoneImage = [ipad_vc.statusContainer viewWithTag:1];
+    UIImageView *statusImage = [ipad_vc.statusContainer viewWithTag:2];
+    UILabel* statusLabel = [ipad_vc.statusContainer viewWithTag:3];
+    UIActivityIndicatorView* basicUIprogressView = ipad_vc.basicUIprogressView;
     
     iphoneImage.hidden = NO;
     statusImage.alpha = 1.0;
@@ -328,7 +407,7 @@ UIStoryboard *storyboard;
     
     if (normalDeviceName != NULL) {
         // we are displaying a normal mode device
-        _basicUIprogressView.hidden = YES;
+        basicUIprogressView.hidden = YES;
         iphoneImage.alpha = 1.0;
         iphoneImage.image = [UIImage imageNamed:@"iphone_x_generic"];
         statusImage.image = [UIImage imageNamed:@"checkmark.seal.fill"];
@@ -342,7 +421,7 @@ UIStoryboard *storyboard;
     }
     else if (strstr(devptr -> getDisplayName(), "iPhone") != NULL) {
         NSString* devname = [NSString stringWithUTF8String: devptr -> getDisplayName()];
-        _basicUIprogressView.hidden = YES;
+        basicUIprogressView.hidden = YES;
         iphoneImage.alpha = 1.0;
         iphoneImage.image = [UIImage imageNamed:@"iphone_x_generic"];
         statusImage.image = [UIImage imageNamed:@"checkmark.seal.fill"];
@@ -350,7 +429,7 @@ UIStoryboard *storyboard;
         
         NSAttributedString *regularStr = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat: @"%@\n%s Mode", devname, devptr->getDeviceMode()] attributes:regularAttrs];
         if (devptr->checkPwn()) {
-            regularStr = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat: @"%@\n%s Mode (pwned)", devname, devptr->getDeviceMode()] attributes:regularAttrs];
+            regularStr = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat: @"%@\n%s Mode\n\n\n\n\nPwned with %s", devname, devptr->getDeviceMode(), devptr->getPWNDTag()] attributes:regularAttrs];
         }
         
         NSMutableAttributedString *combinedStr = [[NSMutableAttributedString alloc] init];
@@ -429,35 +508,10 @@ UIStoryboard *storyboard;
 }
 
 
-- (BOOL)monitorFileChanges {
-
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0];
-    //NSString *filePath = [documentsDirectory stringByAppendingPathComponent:@"LiNUZE_stdoutwrapper.txt"];
-    NSString *filePath = @"/var/mobile/Media/LiNUZE/LiNUZE_stdoutwrapper.txt";
-    NSFileHandle *fileHandle = [NSFileHandle fileHandleForReadingAtPath:filePath];
-    [fileHandle seekToEndOfFile];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(handleFileChangedNotification:)
-                                                 name:NSFileHandleDataAvailableNotification
-                                               object:fileHandle];
-    [fileHandle waitForDataInBackgroundAndNotify];
-    return true;
-}
-
-- (void)handleFileChangedNotification:(NSNotification *)notification {
-    NSFileHandle *fileHandle = [notification object];
-    NSData *data = [fileHandle availableData];
-    NSString *newContent = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    
-    [self infoLog:newContent color:[UIColor whiteColor]];
-    [fileHandle waitForDataInBackgroundAndNotify];
-}
-
-
 bool firstRun = true;
 bool didAlreadyStartMonitoring = false;
 bool sanityCheckPassed = false;
+USBUtils* usbVC;
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
@@ -475,23 +529,6 @@ bool sanityCheckPassed = false;
     }
     
     [self updateStatus:@"view did reload" color: [UIColor whiteColor]];
-    
-    UIWindow *keyWindow = UIApplication.sharedApplication.keyWindow;
-    CGSize screenSize = UIScreen.mainScreen.bounds.size;
-    CGSize windowSize = keyWindow.bounds.size;
-    if (windowSize.width < screenSize.width || windowSize.height < screenSize.height) {
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-        UIViewController *iPhoneUI = [storyboard instantiateViewControllerWithIdentifier:@"iPhoneUI"];
-        UINavigationController *navController = self.navigationController;
-        ViewController* top = (ViewController*)navController.topViewController;
-        // Check if the current view controller is already the top view controller
-        if (top.iPadBC1 != NULL) {
-            [navController popToRootViewControllerAnimated:NO];
-            [navController pushViewController:iPhoneUI animated:YES];
-        }
-        return;
-    }
-    
     [self displayCorrectBasicInterface:[NSString stringWithUTF8String: __func__] devptr:maindevptr normaldevname:NULL VC:self];
     [self gentlyDeactivateButtons];
     
@@ -512,9 +549,9 @@ bool sanityCheckPassed = false;
     if (didAlreadyStartMonitoring)
         return;
     didAlreadyStartMonitoring = true;
-    
+    //[self monitorCPUusage];
     background_thread {
-        USBUtils* usbVC = [[USBUtils alloc] init];
+        usbVC = [[USBUtils alloc] init];
         [usbVC startMonitoringUSBDevices:self maindevptr:&maindevptr normaldevptr:&normaldevptr lockdownptr:&lockdownptr normaldevname:&normaldevname];
     });
     
@@ -554,6 +591,25 @@ bool sanityCheckPassed = false;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:YES];
+    
+    NSArray *layers = @[(self.cv1.layer ?: [NSNull null]),
+                        (self.cv2.layer ?: [NSNull null]),
+                        (self.cv3.layer ?: [NSNull null]),
+                        (self.cv4.layer ?: [NSNull null]),
+                        (self.cv5.layer ?: [NSNull null])];
+
+    for (CALayer *layer in layers) {
+        if ([layer isEqual:[NSNull null]])
+            continue;
+        for (CALayer *subLayer in layer.sublayers) {
+            subLayer.cornerRadius = 20;
+            subLayer.masksToBounds = YES;
+        }
+    }
+    
+    [_firstScrollView setShowsVerticalScrollIndicator:NO];
+    [_secondScrollView setShowsVerticalScrollIndicator:NO];
+    
     if (!([self.restorationIdentifier isEqualToString:@"iPhoneUI"]) && !([self.restorationIdentifier isEqualToString:@"iPadUI"])) {
         if (self -> _devInfoBox != NULL) {
             
@@ -583,37 +639,25 @@ bool sanityCheckPassed = false;
             _iphone_logview_dismissButton.translatesAutoresizingMaskIntoConstraints = NO;
             [_iphone_logview_dismissButton.widthAnchor constraintEqualToConstant:30].active = YES;
             [_iphone_logview_dismissButton.heightAnchor constraintEqualToConstant:30].active = YES;
-
             
         }
         return;
     }
     
-    NSArray *layers = @[(self.buttonContainer.layer ?: [NSNull null]),
-                        (self.bc2.layer ?: [NSNull null]),
-                        (self.bc3.layer ?: [NSNull null]),
-                        (self.bc4.layer ?: [NSNull null]),
-                        (self.iPadBC1.layer ?: [NSNull null]),
-                        (self.iPadBC2.layer ?: [NSNull null]),
-                        (self.iPadBC3.layer ?: [NSNull null]),
-                        (self.iPadBC4.layer ?: [NSNull null])];
-
-    for (CALayer *layer in layers) {
-        if ([layer isEqual:[NSNull null]])
-            continue;
-        for (CALayer *subLayer in layer.sublayers) {
-            subLayer.cornerRadius = 20;
-            subLayer.masksToBounds = YES;
-        }
-    }
     [self loadCorrectUI];
     
-    UIStackView *stackView = self.leftVStack; // replace with your actual UIStackView instance
+    UIStackView *stackView = self.leftVStack;
     UIView *spacerView = [[UIView alloc] initWithFrame:CGRectZero];
     spacerView.translatesAutoresizingMaskIntoConstraints = NO;
-    NSLayoutConstraint *spacerHeightConstraint = [spacerView.heightAnchor constraintEqualToConstant:20.0];
+    NSLayoutConstraint *spacerHeightConstraint = [spacerView.heightAnchor constraintEqualToConstant:10.0];
     spacerHeightConstraint.active = YES;
-    [stackView insertArrangedSubview:spacerView atIndex:3];
+    [stackView insertArrangedSubview:spacerView atIndex:2];
+    
+    UIView *spacerViewDup = [[UIView alloc] initWithFrame:CGRectZero];
+    spacerViewDup.translatesAutoresizingMaskIntoConstraints = NO;
+    NSLayoutConstraint *spacerHeightConstraintDup = [spacerViewDup.heightAnchor constraintEqualToConstant:30.0];
+    spacerHeightConstraintDup.active = YES;
+
     
     // Things UIKit makes me do...
     UILabel *alignmentLabel = _alignment;
@@ -645,7 +689,6 @@ bool sanityCheckPassed = false;
 
     CGSize scrollableSize = CGSizeMake(0, 10);
     [_ipad_logscrollview setContentSize:scrollableSize];
-    _enter_rec_activity.hidden = true;
     
     _ipad_statusstr.text = [NSString stringWithFormat: @"Env: %@", getEnvDetails()];
     
@@ -674,6 +717,18 @@ bool sanityCheckPassed = false;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    static bool didSanityCheck = false;
+    
+    if (!didSanityCheck) {
+    // basically the first run and viewdidload will never reach here again
+
+        [self startMonitoringStdout];
+        
+        if (sanityCheck() == 0)
+            sanityCheckPassed = true;
+    }
+    didSanityCheck = true;
+    
     if (([self.restorationIdentifier isEqualToString:@"iPhoneUI"]) || ([self.restorationIdentifier isEqualToString:@"iPadUI"])) {
         
         PlistModifier* nightlyCheck = (PlistModifier*)malloc(sizeof(PlistModifier));
@@ -685,23 +740,24 @@ bool sanityCheckPassed = false;
             _versionLabel.text = [_versionLabel.text stringByAppendingString:@" © rA9 2023"];
             _versionLabeliPad.text = [_versionLabeliPad.text stringByAppendingString:@" © rA9 2023"];
         }
+        [_iphoneImage.layer setMinificationFilter:kCAFilterTrilinear];
+    }
+    if ([self.restorationIdentifier isEqualToString:@"iPadUI"]) {
+        ipad_logview_addr = self.ipad_logview;
+        ipad_vc = self;
+        iphone_vc = NULL;
+    }
+    else if ([self.restorationIdentifier isEqualToString:@"iPhoneUI"]) {
+        iphone_vc = self;
     }
     
-    static bool didSanityCheck = false;
-    
-    if (!didSanityCheck && [self monitorFileChanges] && sanityCheck() == 0)
-        sanityCheckPassed = true;
-    
-    didSanityCheck = true;
 }
 
 - (void)exitRecovery:(id)sender {
     [self updateStatus:[NSString stringWithFormat:@"exitRecovery got called from %@", sender] color:[UIColor whiteColor]];
-    [[self bc2] setUserInteractionEnabled:NO];
-    [[self iPadBC2] setUserInteractionEnabled:NO];
+    [[self exitRecoveryButtonOutlet] setUserInteractionEnabled:NO];
 
-    [self animateButtonTap:self->_bc2];
-    [self animateButtonTap:self->_iPadBC2];
+    [self animateButtonTap:self->_exitRecoveryButtonOutlet];
     
     background_thread {
         if (maindevptr == NULL) {
@@ -731,11 +787,10 @@ bool sanityCheckPassed = false;
 
 - (void)enterRecovery:(id)sender {
     [self updateStatus:[NSString stringWithFormat:@"enterRecovery got called from %@", sender] color:[UIColor whiteColor]];
-    [[self buttonContainer] setUserInteractionEnabled:NO];
-    [[self iPadBC1] setUserInteractionEnabled:NO];
+    [[self enterRecoveryButtonOutlet] setUserInteractionEnabled:NO];
 
-    [self animateButtonTap:self->_buttonContainer];
-    [self animateButtonTap:self->_iPadBC1];
+    [self animateButtonTap:self->_enterRecoveryButtonOutlet];
+
     background_thread {
         lockdownd_enter_recovery(*lockdownptr);
         lockdownd_goodbye(*lockdownptr);
@@ -743,6 +798,33 @@ bool sanityCheckPassed = false;
     });
 }
 
+- (void)exploitDFU {
+    int cpid = NSCPID(&maindevptr -> getDevInfo() -> cpid).intValue;
+    [self updateStatus:@"Pausing USB device monitoring for pwndfu functions" color:[UIColor whiteColor]];
+    [usbVC stopMonitoringUSBDevices];
+    maindevptr -> freeDevice();
+    background_thread {
+        sleep(1);
+        // ipwnder_lite seems to be unreliable on A9, so use gaster instead
+        if (cpid == 7000 || cpid == 7001 || cpid == 8000 || cpid == 8003)
+            run_gaster();
+        else
+            run_ipwnder_lite();
+        
+        main_thread {
+            [self updateStatus:@"Resuming USB device monitoring in 1s" color:[UIColor whiteColor]];
+        });
+        sleep(1);
+        [usbVC startMonitoringUSBDevices:self maindevptr:&maindevptr normaldevptr:&normaldevptr lockdownptr:&lockdownptr normaldevname:&normaldevname];
+    });
+}
+
+- (void)pushLogview {
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    UIViewController *onboardingVC = [storyboard instantiateViewControllerWithIdentifier:@"logview_iphone"];
+    onboardingVC.modalPresentationStyle = UIModalPresentationFormSheet;
+    [iphone_vc presentViewController:onboardingVC animated:YES completion:nil];
+}
 
 #pragma mark BUTTON ACTIONS
 
@@ -751,25 +833,9 @@ bool sanityCheckPassed = false;
 }
 
 
-
-- (IBAction)exitRecoveryAct:(id)sender {
-    [self animateButtonTap:_bc2];
-    [self exitRecovery:sender];
-}
-
-- (IBAction)enter_rec_ipad_act:(id)sender {
-    [self animateButtonTap:_buttonContainer];
-    [self enterRecovery:sender];
-}
-
-- (IBAction)exit_rec_ipad_act:(id)sender {
-    [self animateButtonTap:_iPadBC2];
-    [self exitRecovery:sender];
-}
-
 - (void) showUnsupported {
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Not supported"
-                                                                   message:@"This feature is not yet available."
+                                                                   message:@"This feature is not available yet."
                                                             preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction* okButton = [UIAlertAction actionWithTitle:@"OK"
                                                          style:UIAlertActionStyleDefault
@@ -778,41 +844,56 @@ bool sanityCheckPassed = false;
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-- (IBAction)set_apnonce_ipad_act:(id)sender {
-    [self animateButtonTap:_iPadBC3];
+
+- (IBAction)enterRecoveryButtonTapped:(id)sender {
+    [ipad_vc animateButtonTap:_cv1];
+    if (iphone_vc != NULL) {
+        [self pushLogview];
+    }
+    [self enterRecovery:self];
+}
+
+- (IBAction)exitRecoveryButtonTapped:(id)sender {
+    [ipad_vc animateButtonTap:_cv2];
+    if (iphone_vc != NULL) {
+        [self pushLogview];
+    }
+    [self exitRecovery:self];
+}
+
+- (IBAction)setAPNonceButtonTapped:(id)sender {
+    [ipad_vc animateButtonTap:_cv3];
+    [self showUnsupported];
+}
+- (IBAction)LeetDownButtonTapped:(id)sender {
+    [ipad_vc animateButtonTap:_cv4];
     [self showUnsupported];
 }
 
-- (IBAction)leetdown_ipad_act:(id)sender {
-    [self animateButtonTap:_iPadBC4];
-    [self showUnsupported];
-}
-- (IBAction)enterRecoveryActiPhone:(id)sender {
-    [self animateButtonTap:_buttonContainer];
-    [self enterRecovery:sender];
-}
-
-
-
-- (IBAction)setNonceAct:(id)sender {
-    [self animateButtonTap:_bc3];
-    [self showUnsupported];
-}
-
-- (IBAction)leetdownAct:(id)sender {
-    [self animateButtonTap:_bc4];
-    [self showUnsupported];
-}
-
-- (IBAction)devInfoAct:(id)sender {
+- (IBAction)pwnDeviceButtonTapped:(id)sender {
     
+    if (iphone_vc != NULL) {
+        [self pushLogview];
+    }
+    
+    [ipad_vc animateButtonTap:_cv5];
+    [ipad_vc gentlyDeactivateButtons];
+    UIImageView *iphoneImage = [ipad_vc.statusContainer viewWithTag:1];
+    UIImageView *statusImage = [ipad_vc.statusContainer viewWithTag:2];
+    UILabel* statusLabel = [ipad_vc.statusContainer viewWithTag:3];
+    UIActivityIndicatorView* basicUIprogressView = [ipad_vc.statusContainer viewWithTag:5];
+    
+    [statusLabel setText:@"Pwning device..."];
+    [statusImage setImage:[UIImage imageNamed:@"cloud.rain"]];
+    [iphoneImage setAlpha:0];
+    [basicUIprogressView startAnimating];
+    [self exploitDFU];
 }
 
 
 
 
 - (void)dealloc {
-    [_iPadBC1 release];
     [super dealloc];
 }
 @end

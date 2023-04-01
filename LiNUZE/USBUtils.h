@@ -22,6 +22,7 @@
 - (NSString*) getNameOfUSBDevice:(io_object_t) usbDevice;
 - (void) USBDeviceDetectedCallback:(void *)refcon iterator: (io_iterator_t) iterator;
 - (void) registerForUSBDeviceNotifications;
+- (void) stopMonitoringUSBDevices;
 @property (nonatomic, strong) UIViewController* vc;
 @property (nonatomic) LDD* devptr;
 

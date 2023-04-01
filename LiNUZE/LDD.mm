@@ -9,12 +9,15 @@
 #include <Foundation/Foundation.h>
 #import "LiNUZE_VC.h"
 
+extern bool deadDevice;
 
 using namespace std;
 
 int LDD::openConnection(int tries) {
     
     for (int i = 0; i < tries; i++) {
+        if (deadDevice)
+            return -1;
         printf("[%s]: attempting to connect %i/%i\n", __func__, i+1, tries);
         client = NULL;
         irecv_error_t error = irecv_open_with_ecid(&client, initECID);
@@ -149,6 +152,12 @@ bool LDD::checkPwn() {
     }
     string pwnstr = this -> devinfo -> serial_string;
     if (pwnstr.find("PWND") != string::npos) {
+        // update pwnd string
+        NSString *pwnd_str = [NSString stringWithUTF8String: getDevInfo()->serial_string];
+        NSRange pwndRange = [pwnd_str rangeOfString:@"PWND:["];
+        NSRange closingBracketRange = [pwnd_str rangeOfString:@"]" options:0 range:NSMakeRange(pwndRange.location + pwndRange.length, pwnd_str.length - pwndRange.location - pwndRange.length)];
+        NSString *pwndValue = [pwnd_str substringWithRange:NSMakeRange(pwndRange.location + pwndRange.length, closingBracketRange.location - pwndRange.location - pwndRange.length)];
+        pwndStr = pwndValue.UTF8String;
         return true;
     }
     return false;

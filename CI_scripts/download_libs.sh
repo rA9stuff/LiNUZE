@@ -1,10 +1,24 @@
 mkdir libs && cd libs
 
-curl -O -J http://apt.bingner.com/debs/1443.00/libimobiledevice6_1.3.1-1_iphoneos-arm.deb
-curl -O -J http://apt.bingner.com/debs/1443.00/libirecovery3_1.0.1-1_iphoneos-arm.deb
-curl -O -J http://apt.bingner.com/debs/1443.00/libusb-1.0-0_1.0.23-1_iphoneos-arm.deb
-curl -O -J http://apt.bingner.com/debs/1443.00/libusbmuxd6_2.0.3-1_iphoneos-arm.deb
+curl -LO -J http://apt.bingner.com/debs/1443.00/libimobiledevice6_1.3.1-1_iphoneos-arm.deb
+curl -LO -J http://apt.bingner.com/debs/1443.00/libirecovery3_1.0.1-1_iphoneos-arm.deb
+curl -LO -J http://apt.bingner.com/debs/1443.00/libusb-1.0-0_1.0.23-1_iphoneos-arm.deb
+curl -LO -J http://apt.bingner.com/debs/1443.00/libusbmuxd6_2.0.3-1_iphoneos-arm.deb
+curl -LO -J https://nightly.link/rA9stuff/gaster/workflows/main/main/gaster.a.zip
+curl -LO -J https://nightly.link/rA9stuff/ipwnder_lite/workflows/main/main/checkm8_arm64.a.zip
+curl -LO -J https://nightly.link/rA9stuff/ipwnder_lite/workflows/main/main/common.a.zip
+curl -LO -J https://nightly.link/rA9stuff/ipwnder_lite/workflows/main/main/iousb.a.zip
+curl -LO -J https://nightly.link/rA9stuff/ipwnder_lite/workflows/main/main/ipwnder_main.a.zip
+curl -LO -J https://nightly.link/rA9stuff/ipwnder_lite/workflows/main/main/limera1n.a.zip
+curl -LO -J https://nightly.link/rA9stuff/ipwnder_lite/workflows/main/main/payload.a.zip
+curl -LO -J https://nightly.link/rA9stuff/ipwnder_lite/workflows/main/main/s5l8950x.a.zip
 
+
+for file in *.zip
+do
+    unzip "$file"
+    rm -f $file
+done
 
 for file in *.deb; do
   if [[ -f "$file" ]]; then

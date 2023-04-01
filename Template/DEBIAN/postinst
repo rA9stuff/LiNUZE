@@ -37,5 +37,6 @@ ldid -S/Applications/LiNUZE.app/Entitlements.plist /usr/sbin/usbmuxd
 while ps aux | grep -v grep | grep usbmuxd > /dev/null; do
   killall usbmuxd
 done
+
 uicache > /dev/null 2>&1
 exit 0

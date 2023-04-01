@@ -142,6 +142,11 @@
     
 }
 
+- (IBAction)viewProjectButtonClicked:(id)sender {
+    NSURL *url = [NSURL URLWithString:@"https://github.com/ra9stuff/LiNUZE"];
+    [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
+}
+
 - (IBAction)doneButtonAct:(id)sender {
     PlistModifier *landed = (PlistModifier*)malloc(sizeof(PlistModifier));
     landed -> modifyPref(@"Landed", @"1");

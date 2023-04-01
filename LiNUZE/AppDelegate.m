@@ -8,6 +8,8 @@
 
 #import "AppDelegate.h"
 
+NSPipe* lnpipe;
+
 char* deviceName(void) {
     
     struct utsname systemInfo;
@@ -34,21 +36,8 @@ char* deviceName(void) {
         self.window.rootViewController = vc;
         [self.window makeKeyAndVisible];
     }
-    [self redirectConsoleLogToDocumentFolder];
     
     return YES;
-}
-
-- (void) redirectConsoleLogToDocumentFolder
-{
-    NSString *logPath = @"/var/mobile/Media/LiNUZE/LiNUZE_stdoutwrapper.txt";
-   // NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-   // NSString *documentsDirectory = [paths objectAtIndex:0];
-   // NSString *filePath = [documentsDirectory stringByAppendingPathComponent:@"LiNUZE_stdoutwrapper.txt"];
-
-    freopen([logPath fileSystemRepresentation],"w",stdout);
-    setvbuf(stdout, NULL, _IONBF, 0);
-  //  freopen([logPath fileSystemRepresentation],"a+",stderr);
 }
 
 

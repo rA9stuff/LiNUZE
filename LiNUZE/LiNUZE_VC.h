@@ -13,21 +13,11 @@
 #undef NSLog
 
 @interface ViewController : UIViewController
-@property (weak, nonatomic) IBOutlet UIView *buttonContainer;
-@property (weak, nonatomic) IBOutlet UIView *bc2;
-@property (weak, nonatomic) IBOutlet UIView *bc3;
-@property (weak, nonatomic) IBOutlet UIView *bc4;
 @property (weak, nonatomic) IBOutlet UILabel *statusStr;
 @property (weak, nonatomic) IBOutlet UITextView *devInfoBox;
-@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *exitRecProgress;
 @property (weak, nonatomic) IBOutlet UIImageView *exitRecImg;
 @property (weak, nonatomic) IBOutlet UILabel *versionLabel;
-@property (retain, nonatomic) IBOutlet UIView *iPadBC1;
-@property (retain, nonatomic) IBOutlet UIView *iPadBC2;
-@property (retain, nonatomic) IBOutlet UIView *iPadBC3;
-@property (retain, nonatomic) IBOutlet UIView *iPadBC4;
 @property (retain, nonatomic) IBOutlet UITextView *ipad_logview;
-@property (retain, nonatomic) IBOutlet UIActivityIndicatorView *enter_rec_activity;
 @property (retain, nonatomic) IBOutlet UIImageView *enter_rec_img;
 @property (retain, nonatomic) IBOutlet UILabel *ipad_statusstr;
 @property (retain, nonatomic) IBOutlet UIScrollView *ipad_logscrollview;
@@ -50,13 +40,33 @@
 @property (retain, nonatomic) IBOutlet UIView *OnboardingView;
 @property (retain, nonatomic) IBOutlet UIButton *OnboardingViewDoneButton;
 @property (retain, nonatomic) IBOutlet UIStackView *leftVStack;
-@property (retain, nonatomic) IBOutlet UIView *spacer;
 @property (retain, nonatomic) IBOutlet UILabel *alignment;
 @property (retain, nonatomic) IBOutlet UIStackView *iphone_logview_hstack;
 @property (retain, nonatomic) IBOutlet UIButton *iphone_logview_dismissButton;
 @property (retain, nonatomic) IBOutlet UILabel *logwindow_label;
 @property (retain, nonatomic) IBOutlet UIStackView *logview_hstack;
 @property (retain, nonatomic) IBOutlet UILabel *versionLabeliPad;
+
+@property (retain, nonatomic) IBOutlet UIView *enterRecoveryButtonOutlet;
+@property (retain, nonatomic) IBOutlet UIView *exitRecoveryButtonOutlet;
+@property (retain, nonatomic) IBOutlet UIView *setAPNonceButtonOutlet;
+@property (retain, nonatomic) IBOutlet UIView *LeetDownButtonOutlet;
+@property (retain, nonatomic) IBOutlet UIView *pwnDeviceButtonOutlet;
+@property (retain, nonatomic) IBOutlet UIView *cv1;
+@property (retain, nonatomic) IBOutlet UIView *cv2;
+@property (retain, nonatomic) IBOutlet UIView *cv3;
+@property (retain, nonatomic) IBOutlet UIView *cv4;
+@property (retain, nonatomic) IBOutlet UIView *cv5;
+@property (retain, nonatomic) IBOutlet UIView *ipad_upper_container;
+@property (retain, nonatomic) IBOutlet UIView *ipad_bottom_container;
+@property (retain, nonatomic) IBOutlet UIView *iphone_upper_container;
+@property (retain, nonatomic) IBOutlet UIView *iphone_bottom_container;
+@property (retain, nonatomic) IBOutlet UILabel *cpu_usage_label;
+
+@property (retain, nonatomic) IBOutlet UIScrollView *firstScrollView;
+@property (retain, nonatomic) IBOutlet UIScrollView *secondScrollView;
+
+
 
 @end
 

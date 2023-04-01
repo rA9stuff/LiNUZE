@@ -16,13 +16,22 @@
 		6446AFD729BE3DD70003645F /* Entitlements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6446AFD629BE3DD70003645F /* Entitlements.plist */; };
 		64D0FA4A29A4C39B00553AFB /* LiNUZPrefs.plist in Resources */ = {isa = PBXBuildFile; fileRef = 64D0FA4929A4C39B00553AFB /* LiNUZPrefs.plist */; };
 		64D0FA4C29A4C3D400553AFB /* PlistModifier.mm in Sources */ = {isa = PBXBuildFile; fileRef = 64D0FA4B29A4C3D400553AFB /* PlistModifier.mm */; };
+		64DD20E829D8C8AF007E3C48 /* limera1n.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 64DD20E129D8C8AF007E3C48 /* limera1n.a */; };
+		64DD20E929D8C8AF007E3C48 /* common.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 64DD20E229D8C8AF007E3C48 /* common.a */; };
+		64DD20EA29D8C8AF007E3C48 /* checkm8_arm64.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 64DD20E329D8C8AF007E3C48 /* checkm8_arm64.a */; };
+		64DD20EB29D8C8AF007E3C48 /* iousb.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 64DD20E429D8C8AF007E3C48 /* iousb.a */; };
+		64DD20EC29D8C8AF007E3C48 /* gaster.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 64DD20E529D8C8AF007E3C48 /* gaster.a */; };
+		64DD20ED29D8C8AF007E3C48 /* s5l8950x.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 64DD20E629D8C8AF007E3C48 /* s5l8950x.a */; };
+		64DD20EE29D8C8AF007E3C48 /* payload.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 64DD20E729D8C8AF007E3C48 /* payload.a */; };
+		64DD20F129D8CC58007E3C48 /* ipwnder_main.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 64DD20EF29D8CB4E007E3C48 /* ipwnder_main.a */; };
+		64E965E129CB453A00C2E8AE /* exploit_wrappers.m in Sources */ = {isa = PBXBuildFile; fileRef = 64E965E029CB453A00C2E8AE /* exploit_wrappers.m */; };
 		64FED8F52995586E00DCA4F3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 64FED8F32995586E00DCA4F3 /* Foundation.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		64FED8F62995586E00DCA4F3 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 64FED8F42995586E00DCA4F3 /* CoreFoundation.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		64FED8F8299558D400DCA4F3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 64FED8F7299558D400DCA4F3 /* UIKit.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		69F5F81A29C75F7400D60170 /* libimobiledevice.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 69F5F81529C75F7200D60170 /* libimobiledevice.6.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
 		69F5F81C29C75F7400D60170 /* libusbmuxd.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 69F5F81629C75F7300D60170 /* libusbmuxd.6.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
 		69F5F81E29C75F7400D60170 /* libcrypto.1.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 69F5F81729C75F7300D60170 /* libcrypto.1.1.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
-		69F5F82029C75F7400D60170 /* libirecovery.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 69F5F81829C75F7300D60170 /* libirecovery.3.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
+		69F5F82029C75F7400D60170 /* libirecovery.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 69F5F81829C75F7300D60170 /* libirecovery.3.dylib */; settings = {ATTRIBUTES = (Required, ); }; };
 		69F5F82229C75F7400D60170 /* libusb-1.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 69F5F81929C75F7400D60170 /* libusb-1.0.0.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
 		A1A306FE28A9A1B300275F72 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A1A306FD28A9A1B300275F72 /* AppDelegate.m */; };
 		A1A3070128A9A1B300275F72 /* LiNUZE_VC.mm in Sources */ = {isa = PBXBuildFile; fileRef = A1A3070028A9A1B300275F72 /* LiNUZE_VC.mm */; };
@@ -35,6 +44,7 @@
 /* Begin PBXFileReference section */
 		64020DB928AAF813003E7436 /* LDD.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LDD.mm; sourceTree = "<group>"; };
 		64020DBA28AAF813003E7436 /* LDD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LDD.h; sourceTree = "<group>"; };
+		64039D8529CA42C0000127D3 /* exploit_wrappers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = exploit_wrappers.h; sourceTree = "<group>"; };
 		640ED2AC29ABBB6D007F3869 /* NormalModeOperations.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = NormalModeOperations.mm; sourceTree = "<group>"; };
 		640ED2AE29ABBB8D007F3869 /* NormalModeOperations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NormalModeOperations.h; sourceTree = "<group>"; };
 		641ACC9629C77CA000BE4442 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
@@ -47,6 +57,15 @@
 		64D0FA4929A4C39B00553AFB /* LiNUZPrefs.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = LiNUZPrefs.plist; sourceTree = "<group>"; };
 		64D0FA4B29A4C3D400553AFB /* PlistModifier.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PlistModifier.mm; sourceTree = "<group>"; };
 		64D0FA4D29A4C3E000553AFB /* PlistModifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlistModifier.h; sourceTree = "<group>"; };
+		64DD20E129D8C8AF007E3C48 /* limera1n.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = limera1n.a; path = CI_scripts/libs/limera1n.a; sourceTree = "<group>"; };
+		64DD20E229D8C8AF007E3C48 /* common.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = common.a; path = CI_scripts/libs/common.a; sourceTree = "<group>"; };
+		64DD20E329D8C8AF007E3C48 /* checkm8_arm64.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = checkm8_arm64.a; path = CI_scripts/libs/checkm8_arm64.a; sourceTree = "<group>"; };
+		64DD20E429D8C8AF007E3C48 /* iousb.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = iousb.a; path = CI_scripts/libs/iousb.a; sourceTree = "<group>"; };
+		64DD20E529D8C8AF007E3C48 /* gaster.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = gaster.a; path = CI_scripts/libs/gaster.a; sourceTree = "<group>"; };
+		64DD20E629D8C8AF007E3C48 /* s5l8950x.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = s5l8950x.a; path = CI_scripts/libs/s5l8950x.a; sourceTree = "<group>"; };
+		64DD20E729D8C8AF007E3C48 /* payload.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = payload.a; path = CI_scripts/libs/payload.a; sourceTree = "<group>"; };
+		64DD20EF29D8CB4E007E3C48 /* ipwnder_main.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = ipwnder_main.a; path = CI_scripts/libs/ipwnder_main.a; sourceTree = "<group>"; };
+		64E965E029CB453A00C2E8AE /* exploit_wrappers.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = exploit_wrappers.m; sourceTree = "<group>"; };
 		64F6486B28C51470001CDDF2 /* NSTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSTask.h; sourceTree = "<group>"; };
 		64FED8F32995586E00DCA4F3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		64FED8F42995586E00DCA4F3 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
@@ -73,6 +92,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				64DD20F129D8CC58007E3C48 /* ipwnder_main.a in Frameworks */,
+				64DD20E829D8C8AF007E3C48 /* limera1n.a in Frameworks */,
+				64DD20E929D8C8AF007E3C48 /* common.a in Frameworks */,
+				64DD20EA29D8C8AF007E3C48 /* checkm8_arm64.a in Frameworks */,
+				64DD20EB29D8C8AF007E3C48 /* iousb.a in Frameworks */,
+				64DD20EC29D8C8AF007E3C48 /* gaster.a in Frameworks */,
+				64DD20ED29D8C8AF007E3C48 /* s5l8950x.a in Frameworks */,
+				64DD20EE29D8C8AF007E3C48 /* payload.a in Frameworks */,
 				64FED8F8299558D400DCA4F3 /* UIKit.framework in Frameworks */,
 				64FED8F62995586E00DCA4F3 /* CoreFoundation.framework in Frameworks */,
 				69F5F81A29C75F7400D60170 /* libimobiledevice.6.dylib in Frameworks */,
@@ -91,6 +118,14 @@
 		64020DA628AAF6EB003E7436 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				64DD20EF29D8CB4E007E3C48 /* ipwnder_main.a */,
+				64DD20E329D8C8AF007E3C48 /* checkm8_arm64.a */,
+				64DD20E229D8C8AF007E3C48 /* common.a */,
+				64DD20E529D8C8AF007E3C48 /* gaster.a */,
+				64DD20E429D8C8AF007E3C48 /* iousb.a */,
+				64DD20E129D8C8AF007E3C48 /* limera1n.a */,
+				64DD20E729D8C8AF007E3C48 /* payload.a */,
+				64DD20E629D8C8AF007E3C48 /* s5l8950x.a */,
 				641ACC9629C77CA000BE4442 /* IOKit.framework */,
 				69F5F81729C75F7300D60170 /* libcrypto.1.1.dylib */,
 				69F5F81529C75F7200D60170 /* libimobiledevice.6.dylib */,
@@ -147,6 +182,8 @@
 				640ED2AE29ABBB8D007F3869 /* NormalModeOperations.h */,
 				64D0FA4D29A4C3E000553AFB /* PlistModifier.h */,
 				64D0FA4B29A4C3D400553AFB /* PlistModifier.mm */,
+				64039D8529CA42C0000127D3 /* exploit_wrappers.h */,
+				64E965E029CB453A00C2E8AE /* exploit_wrappers.m */,
 			);
 			path = LiNUZE;
 			sourceTree = "<group>";
@@ -251,6 +288,7 @@
 				64D0FA4C29A4C3D400553AFB /* PlistModifier.mm in Sources */,
 				64020DBB28AAF813003E7436 /* LDD.mm in Sources */,
 				643799FA29990FA700607ECE /* USBUtils.mm in Sources */,
+				64E965E129CB453A00C2E8AE /* exploit_wrappers.m in Sources */,
 				640ED2AD29ABBB6D007F3869 /* NormalModeOperations.mm in Sources */,
 				A1A3070C28A9A1B500275F72 /* main.m in Sources */,
 				A1A306FE28A9A1B300275F72 /* AppDelegate.m in Sources */,
@@ -400,8 +438,8 @@
 				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = KDKJ9R2CR6;
 				EXCLUDED_ARCHS = "";
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -414,13 +452,24 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = (
-					"$(HOME)/Desktop/iOS_Libs",
 					/usr/local/lib,
 					"$(PROJECT_DIR)/CI_scripts/libs",
 					"$(HOME)/Downloads",
+					"$(HOME)/ipwnder_lite",
+					"$(HOME)/gaster",
 				);
 				MARKETING_VERSION = "developer release";
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"-force_load",
+					"$(PROJECT_DIR)/CI_scripts/libs/checkm8_arm64.a",
+					"$(PROJECT_DIR)/CI_scripts/libs/common.a",
+					"$(PROJECT_DIR)/CI_scripts/libs/gaster.a",
+					"$(PROJECT_DIR)/CI_scripts/libs/iousb.a",
+					"$(PROJECT_DIR)/CI_scripts/libs/limera1n.a",
+					"$(PROJECT_DIR)/CI_scripts/libs/payload.a",
+					"$(PROJECT_DIR)/CI_scripts/libs/s5l8950x.a",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = rA9stuff.LiNUZE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -432,7 +481,6 @@
 				SWIFT_VERSION = 5.0;
 				SYSTEM_FRAMEWORK_SEARCH_PATHS = "";
 				SYSTEM_HEADER_SEARCH_PATHS = (
-					/System/Library/Frameworks/CoreFoundation.framework,
 					"/usr/local/include/libimobiledevice-glue",
 					/Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk/System/Library/Frameworks/IOKit.framework/Versions/A/Headers/,
 					"$(HOME)/Documents",
@@ -447,6 +495,8 @@
 					"$(PROJECT_DIR)/CI_scripts/headers/libimobiledevice/include",
 					"/Library/Developer/CommandLineTools/SDKs/MacOSX*.sdk/System/Library/Frameworks/IOKit.framework/Versions/A/Headers",
 					"/Library/Developer/CommandLineTools/SDKs/MacOSX*.sdk/System/Library/Frameworks/Kernel.framework/Versions/A/Headers/",
+					"$(HOME)/ipwnder_lite/ra1npoc/src/include",
+					"$(HOME)/ipwnder_lite/include",
 				);
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(HOME)/Desktop/limd_headers";
@@ -463,8 +513,8 @@
 				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = KDKJ9R2CR6;
 				EXCLUDED_ARCHS = "";
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -477,13 +527,24 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = (
-					"$(HOME)/Desktop/iOS_Libs",
 					/usr/local/lib,
 					"$(PROJECT_DIR)/CI_scripts/libs",
 					"$(HOME)/Downloads",
+					"$(HOME)/ipwnder_lite",
+					"$(HOME)/gaster",
 				);
 				MARKETING_VERSION = "developer release";
 				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = (
+					"-force_load",
+					"$(PROJECT_DIR)/CI_scripts/libs/checkm8_arm64.a",
+					"$(PROJECT_DIR)/CI_scripts/libs/common.a",
+					"$(PROJECT_DIR)/CI_scripts/libs/gaster.a",
+					"$(PROJECT_DIR)/CI_scripts/libs/iousb.a",
+					"$(PROJECT_DIR)/CI_scripts/libs/limera1n.a",
+					"$(PROJECT_DIR)/CI_scripts/libs/payload.a",
+					"$(PROJECT_DIR)/CI_scripts/libs/s5l8950x.a",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = rA9stuff.LiNUZE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -494,19 +555,22 @@
 				SWIFT_VERSION = 5.0;
 				SYSTEM_FRAMEWORK_SEARCH_PATHS = "";
 				SYSTEM_HEADER_SEARCH_PATHS = (
-					/System/Library/Frameworks/CoreFoundation.framework,
 					"/usr/local/include/libimobiledevice-glue",
 					/Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk/System/Library/Frameworks/IOKit.framework/Versions/A/Headers/,
 					"$(HOME)/Documents",
 					"$(HOME)/limd-build/libirecovery/include",
+					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/LiNUZE",
 					"$(PROJECT_DIR)/CI_scripts/headers",
 					"$(PROJECT_DIR)/CI_scripts/headers/libplist/include",
 					"$(PROJECT_DIR)/CI_scripts/headers/libimobiledevice-glue/include",
 					"$(PROJECT_DIR)/CI_scripts/headers/libimobiledevice-glue/src",
 					"$(PROJECT_DIR)/CI_scripts/headers/libirecovery/include",
+					"$(PROJECT_DIR)/CI_scripts/headers/libimobiledevice/include",
 					"/Library/Developer/CommandLineTools/SDKs/MacOSX*.sdk/System/Library/Frameworks/IOKit.framework/Versions/A/Headers",
 					"/Library/Developer/CommandLineTools/SDKs/MacOSX*.sdk/System/Library/Frameworks/Kernel.framework/Versions/A/Headers/",
+					"$(HOME)/ipwnder_lite/ra1npoc/src/include",
+					"$(HOME)/ipwnder_lite/include",
 				);
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(HOME)/Desktop/limd_headers";

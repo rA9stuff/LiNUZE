@@ -39,6 +39,7 @@ public:
     const char* getDisplayName()   { return displayName;   }
     const char* getHardwareModel() { return hardwareModel; }
     const char* getProductType()   { return productType;   }
+    const char* getPWNDTag()       { return pwndStr;       }
     const struct irecv_device_info* getDevInfo() { return devinfo; }
     const char* getDeviceMode();
     
@@ -66,6 +67,7 @@ private:
     const char* hardwareModel;
     const char* productType;
     const char* devMode;
+    const char* pwndStr;
     
     uint64_t initECID;
 };

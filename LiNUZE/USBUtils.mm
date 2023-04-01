@@ -17,11 +17,14 @@
 #include <libimobiledevice-glue/utils.h>
 #include <common.h>
 
-extern bool restoreStarted;
+bool deadDevice;
+bool breaksignal;
 LDD** masterDFUDevice;
 idevice_t** masterNormalDevice;
 lockdownd_client_t** masterLockdownDevice;
 NSString** masterNormalDeviceName;
+extern ViewController* ipad_vc;
+extern ViewController* iphone_vc;
 
 @implementation USBUtils : NSObject
 
@@ -52,10 +55,10 @@ NSString** masterNormalDeviceName;
 
 - (void) displayFailure {
     
-    UIActivityIndicatorView *activityView = [[self.vc statusContainer] viewWithTag:5];
-    UILabel* statusLabel = [[self.vc statusContainer] viewWithTag:3];
-    UIImageView* statusImage = [[self.vc statusContainer] viewWithTag:2];
-    UIImageView* iphoneImage = [[self.vc statusContainer] viewWithTag:1];
+    UIActivityIndicatorView *activityView = [[ipad_vc statusContainer] viewWithTag:5];
+    UILabel* statusLabel = [[ipad_vc statusContainer] viewWithTag:3];
+    UIImageView* statusImage = [[ipad_vc statusContainer] viewWithTag:2];
+    UIImageView* iphoneImage = [[ipad_vc statusContainer] viewWithTag:1];
     
     dispatch_async(dispatch_get_main_queue(), ^{
         iphoneImage.image = [UIImage imageNamed:@"iphone_x_generic"];
@@ -79,7 +82,7 @@ NSString** masterNormalDeviceName;
         [combinedStr appendAttributedString:regularStr];
         
         statusLabel.attributedText = combinedStr;
-        [self.vc updateStatus: err color: [UIColor redColor]];
+        [ipad_vc updateStatus: err color: [UIColor redColor]];
         iphoneImage.alpha = 1.0;
     });
 }
@@ -87,20 +90,20 @@ NSString** masterNormalDeviceName;
 - (void) USBDeviceDetectedCallback:(void *)refcon iterator: (io_iterator_t) iterator {
     io_object_t usbDevice;
     while ((usbDevice = IOIteratorNext(iterator))) {
+        
         NSString* name = [self getNameOfUSBDevice:usbDevice];
         __block int res = -10;
-        UIActivityIndicatorView *activityView = [[self.vc statusContainer] viewWithTag:5];
-        UILabel* statusLabel = [[self.vc statusContainer] viewWithTag:3];
-        UIImageView* statusImage = [[self.vc statusContainer] viewWithTag:2];
-        UIImageView* iphoneImage = [[self.vc statusContainer] viewWithTag:1];
+        UIActivityIndicatorView *activityView = [[ipad_vc statusContainer] viewWithTag:5];
+        UILabel* statusLabel = [[ipad_vc statusContainer] viewWithTag:3];
+        UIImageView* iphoneImage = [[ipad_vc statusContainer] viewWithTag:1];
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.vc updateStatus:[NSString stringWithFormat:@"New USB device: %@", name] color:[UIColor whiteColor]];
+            [ipad_vc updateStatus:[NSString stringWithFormat:@"New USB device: %@", name] color:[UIColor whiteColor]];
         });
         if ([name isEqualToString:@"Apple Mobile Device (DFU Mode)"] || [name isEqualToString:@"Apple Mobile Device (Recovery Mode)"]) {
-            
+            deadDevice = false;
             dispatch_async(dispatch_get_main_queue(), ^{
-                [[self.vc statusStr] setText:name];
-                [self.vc updateStatus: @"Attempting to establish a connection..." color: [UIColor whiteColor]];
+                [[iphone_vc statusStr] setText:name];
+                [ipad_vc updateStatus: @"Attempting to establish a connection..." color: [UIColor whiteColor]];
                 [activityView startAnimating];
                 [statusLabel setText:[NSString stringWithFormat:@"Connecting to %@...", name]];
                 [iphoneImage setHidden:YES];
@@ -116,17 +119,18 @@ NSString** masterNormalDeviceName;
                     *masterDFUDevice = dev;
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [activityView stopAnimating];
-                        [self.vc displayCorrectBasicInterface:[NSString stringWithUTF8String: __func__] devptr:(*masterDFUDevice) normaldevname:NULL VC:self.vc];
-                        [[self.vc statusStr] setText:[NSString stringWithFormat:@"Connected: %s", (*masterDFUDevice)->getDisplayName()]];
-                        [self.vc gentlyActivateButtons];
-                        [self.vc updateStatus: @"OK" color: [UIColor cyanColor]];
-                        [self.vc updateStatus: [NSString stringWithFormat:@"Done, LDD created at %p", dev] color: [UIColor greenColor]];
-                        [self.vc PrintDevInfo:dev];
+                        [ipad_vc displayCorrectBasicInterface:[NSString stringWithUTF8String: __func__] devptr:(*masterDFUDevice) normaldevname:NULL VC:ipad_vc];
+                        [[iphone_vc statusStr] setText:[NSString stringWithFormat:@"Connected: %s", (*masterDFUDevice)->getDisplayName()]];
+                        [ipad_vc gentlyActivateButtons];
+                        [iphone_vc gentlyActivateButtons];
+                        [ipad_vc updateStatus: @"OK" color: [UIColor cyanColor]];
+                        [ipad_vc updateStatus: [NSString stringWithFormat:@"Done, LDD created at %p", dev] color: [UIColor greenColor]];
+                        [ipad_vc PrintDevInfo:dev];
                         if (masterDFUDevice == NULL) {
-                            [self.vc updateStatus: @"masterDFUDevice is null!" color: [UIColor redColor]];
+                            [ipad_vc updateStatus: @"masterDFUDevice is null!" color: [UIColor redColor]];
                         }
                         else
-                            [self.vc updateStatus: [NSString stringWithFormat:@"masterDFUDevice: %p", *masterDFUDevice] color: [UIColor whiteColor]];
+                            [ipad_vc updateStatus: [NSString stringWithFormat:@"masterDFUDevice: %p", *masterDFUDevice] color: [UIColor whiteColor]];
                     });
                     
                 }
@@ -139,9 +143,9 @@ NSString** masterNormalDeviceName;
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 [activityView startAnimating];
-                [[self.vc statusLabelPhone] setText:[NSString stringWithFormat:@"Connecting to %@...", name]];
-                [[self.vc statusStr] setText:[NSString stringWithFormat:@"Connecting to %@...", name]];
-                [self.vc updateStatus:@"iDevice in normal mode detected, things will fail if usbmuxd daemon is not running!" color: [UIColor whiteColor]];
+                [[ipad_vc statusLabelPhone] setText:[NSString stringWithFormat:@"Connecting to %@...", name]];
+                [[ipad_vc statusStr] setText:[NSString stringWithFormat:@"Connecting to %@...", name]];
+                [ipad_vc updateStatus:@"iDevice in normal mode detected, things will fail if usbmuxd daemon is not running!" color: [UIColor whiteColor]];
             });
             
             **masterNormalDevice = NULL;
@@ -149,8 +153,8 @@ NSString** masterNormalDeviceName;
             if (res == -1) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self displayFailure];
-                    [[self.vc statusStr] setText:@"usbmuxd error"];
-                    [self.vc updateStatus:@"Connection failed, is usbmuxd running?" color: [UIColor redColor]];
+                    [[iphone_vc statusStr] setText:@"usbmuxd error"];
+                    [ipad_vc updateStatus:@"Connection failed, is usbmuxd running?" color: [UIColor redColor]];
                 });
                 continue;
             }
@@ -158,15 +162,15 @@ NSString** masterNormalDeviceName;
             if ([*masterNormalDeviceName isEqualToString:@"err"]) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self displayFailure];
-                    [[self.vc statusStr] setText:@"Failed to get device name"];
-                    [self.vc updateStatus:@"Failed to get device name" color: [UIColor redColor]];
+                    [[ipad_vc statusStr] setText:@"Failed to get device name"];
+                    [ipad_vc updateStatus:@"Failed to get device name" color: [UIColor redColor]];
                 });
                 continue;
             }
             if ([*masterNormalDeviceName isEqualToString:@"err_pair"])  {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [[self.vc statusStr] setText:@"Waiting for approval..."];
-                    [self.vc updateStatus:@"Please hit \"trust\" button on your device to continue" color: [UIColor whiteColor]];
+                    [[iphone_vc statusStr] setText:@"Waiting for approval..."];
+                    [ipad_vc updateStatus:@"Please hit \"trust\" button on your device to continue" color: [UIColor whiteColor]];
                 });
                 sleep(2);
                 lockdownd_error_t err = LOCKDOWN_E_PAIRING_DIALOG_RESPONSE_PENDING;
@@ -178,10 +182,11 @@ NSString** masterNormalDeviceName;
             else {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [activityView stopAnimating];
-                    [self.vc displayCorrectBasicInterface:[NSString stringWithUTF8String: __func__] devptr:(*masterDFUDevice) normaldevname: *masterNormalDeviceName VC:self.vc];
-                    [[self.vc statusStr] setText:[NSString stringWithFormat:@"Connected: %@", *masterNormalDeviceName]];
-                    [self.vc updateStatus:[NSString stringWithFormat:@"Connected: %@", *masterNormalDeviceName] color: [UIColor cyanColor]];
-                    [self.vc gentlyActivateButtons];
+                    [ipad_vc displayCorrectBasicInterface:[NSString stringWithUTF8String: __func__] devptr:(*masterDFUDevice) normaldevname: *masterNormalDeviceName VC:ipad_vc];
+                    [[iphone_vc statusStr] setText:[NSString stringWithFormat:@"Connected: %@", *masterNormalDeviceName]];
+                    [ipad_vc updateStatus:[NSString stringWithFormat:@"Connected: %@", *masterNormalDeviceName] color: [UIColor cyanColor]];
+                    [ipad_vc gentlyActivateButtons];
+                    [iphone_vc gentlyActivateButtons];
                 });
             }
         }
@@ -221,30 +226,32 @@ NSString** masterNormalDeviceName;
         
         NSString* name = [self getNameOfUSBDevice:usbDevice];
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.vc updateStatus:[NSString stringWithFormat:@"Lost USB device: %@", name] color:[UIColor whiteColor]];
+            [ipad_vc updateStatus:[NSString stringWithFormat:@"Lost USB device: %@", name] color:[UIColor whiteColor]];
         });
         if ([name isEqualToString:@"Apple Mobile Device (DFU Mode)"] || [name isEqualToString:@"Apple Mobile Device (Recovery Mode)"] || [name isEqualToString:@"iPhone"] || [name isEqualToString:@"iPad"] || [name isEqualToString:@"iPod"]) {
+            deadDevice = true;
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [[self.vc statusStr] setText:@"waiting for a device"];
-                    [self.vc displayCorrectBasicInterface:[NSString stringWithUTF8String: __func__] devptr:NULL normaldevname: NULL VC:self.vc];
-                    [self.vc updateStatus:@"waiting for a device" color: [UIColor whiteColor]];
-                    [self.vc gentlyDeactivateButtons];
+                    [[iphone_vc statusStr] setText:@"waiting for a device"];
+                    [ipad_vc displayCorrectBasicInterface:[NSString stringWithUTF8String: __func__] devptr:NULL normaldevname: NULL VC:ipad_vc];
+                    [ipad_vc updateStatus:@"waiting for a device" color: [UIColor whiteColor]];
+                    [ipad_vc gentlyDeactivateButtons];
+                    [iphone_vc gentlyDeactivateButtons];
                 });
                 if (*masterDFUDevice == NULL) {
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        [self.vc updateStatus: @"Not attempting to free lost LDD..." color: [UIColor whiteColor]];
+                        [ipad_vc updateStatus: @"Not attempting to free lost LDD..." color: [UIColor whiteColor]];
                     });
                     continue;
                 }
                 else if ((*masterDFUDevice)->getDevice() == NULL) {
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        [self.vc updateStatus: @"Not attempting to free lost device..." color: [UIColor whiteColor]];
+                        [ipad_vc updateStatus: @"Not attempting to free lost device..." color: [UIColor whiteColor]];
                     });
                     continue;
                 }
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.vc updateStatus: [NSString stringWithFormat:@"Attempting to free lost device at %p with LDD pair at %p", (*masterDFUDevice)->getDevice(), (*masterDFUDevice)] color: [UIColor whiteColor]];
+                [ipad_vc updateStatus: [NSString stringWithFormat:@"Attempting to free lost device at %p with LDD pair at %p", (*masterDFUDevice)->getDevice(), (*masterDFUDevice)] color: [UIColor whiteColor]];
             });
             (*masterDFUDevice)->freeDevice();
         }
@@ -262,24 +269,25 @@ static void DeviceRemoved(void *refCon, io_iterator_t iterator) {
     [obj USBDeviceRemovedCallback:NULL iterator:iterator];
 }
 
+io_iterator_t detectionIterator, removalIterator;
+
 - (void) registerForUSBDeviceNotifications {
     CFMutableDictionaryRef matchingDict = IOServiceMatching(kIOUSBDeviceClassName);
     if (!matchingDict) {
         NSLog(@"Unable to create matching dictionary for USB device detection");
         return;
     }
-    io_iterator_t iterator;
+    
     IONotificationPortRef notificationPort = IONotificationPortCreate(kIOMasterPortDefault);
     CFRunLoopSourceRef runLoopSource = IONotificationPortGetRunLoopSource(notificationPort);
     CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, kCFRunLoopDefaultMode);
-    kern_return_t kernResult = IOServiceAddMatchingNotification(notificationPort, kIOPublishNotification,
-                                                                matchingDict, DeviceAdded, (__bridge void*)self, &iterator);
+    kern_return_t kernResult = IOServiceAddMatchingNotification(notificationPort, kIOPublishNotification, matchingDict, DeviceAdded, (__bridge void*)self, &detectionIterator);
 
     if (kernResult != kIOReturnSuccess) {
         NSLog(@"Unable to register for USB device detection notifications");
         return;
     }
-    [self USBDeviceDetectedCallback:NULL iterator: iterator];
+    [self USBDeviceDetectedCallback:NULL iterator: detectionIterator];
     
     CFMutableDictionaryRef removalMatchingDict = IOServiceMatching(kIOUSBDeviceClassName);
     if (!removalMatchingDict) {
@@ -287,14 +295,13 @@ static void DeviceRemoved(void *refCon, io_iterator_t iterator) {
         return;
     }
     CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, kCFRunLoopDefaultMode);
-    kernResult = IOServiceAddMatchingNotification(notificationPort, kIOTerminatedNotification,
-                                                  removalMatchingDict, DeviceRemoved, (__bridge void*)self, &iterator);
+    kernResult = IOServiceAddMatchingNotification(notificationPort, kIOTerminatedNotification, removalMatchingDict, DeviceRemoved, (__bridge void*)self, &removalIterator);
 
     if (kernResult != kIOReturnSuccess) {
         NSLog(@"Unable to register for USB device detection notifications");
         return;
     }
-    [self USBDeviceRemovedCallback:NULL iterator:iterator];
+    [self USBDeviceRemovedCallback:NULL iterator:removalIterator];
 }
 
 - (void) startMonitoringUSBDevices:(ViewController *)viewController maindevptr:(LDD**)maindevptr normaldevptr:(idevice_t**) normaldevptr lockdownptr:(lockdownd_client_t**)lockdownptr normaldevname:(NSString**)normaldevname {
@@ -302,8 +309,8 @@ static void DeviceRemoved(void *refCon, io_iterator_t iterator) {
     // we will use a temporary LDD* to connect to a device in USBDeviceDetectedCallback method
     // if it goes well, we'll copy the address to masterDFUDevice,
     // which maindevptr will have access to since it will always point at masterDFUDevice
-    self.vc = viewController;
-    [self.vc updateStatus:@"waiting for a device" color: [UIColor whiteColor]];
+    //ipad_vc = viewController;
+    [ipad_vc updateStatus:@"waiting for a device" color: [UIColor whiteColor]];
     
     masterDFUDevice        = (LDD**)(malloc(sizeof(LDD)));
     masterNormalDevice     = (idevice_t**)malloc(sizeof(idevice_t));
@@ -315,6 +322,12 @@ static void DeviceRemoved(void *refCon, io_iterator_t iterator) {
     
     [self registerForUSBDeviceNotifications];
     [[NSRunLoop currentRunLoop] run];
+    
+}
+
+- (void) stopMonitoringUSBDevices {
+    IOObjectRelease(detectionIterator);
+    IOObjectRelease(removalIterator);
 }
 
 @end
