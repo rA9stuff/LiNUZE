@@ -45,6 +45,7 @@ Note that `compile` uploads the compiled `.deb` file to device with the given IP
 # Supporters
 
 * Will Kellner
+* Jean-Sébastien Ross
 
 You can [support the project](https://www.patreon.com/rA9stuff) to get your name displayed here.
 
