@@ -52,6 +52,8 @@ You can [support the project](https://www.patreon.com/rA9stuff) to get your name
 # Credits
 * [Libimobiledevice](https://libimobiledevice.org) for libimobiledevice.
 * [Serena](https://twitter.com/CoreSerena) and [Opa334](https://twitter.com/opa334dev) for general help with entitlements.
+* [dora2ios](https://twitter.com/dora2ios) for ipwnder_lite. 
+* [0x7ff](https://github.com/0x7ff) for gaster. 
 * [Matty](https://twitter.com/moski_dev) for private testing and help.
 * [MasterMike](https://twitter.com/MasterMike88) for private testing.
 * [screenshots.pro](https://screenshots.pro) for screenshot templates.
