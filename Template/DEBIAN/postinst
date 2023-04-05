@@ -34,9 +34,8 @@ ldid -S /Applications/LiNUZE.app/LiNUZE
 ldid -S/Applications/LiNUZE.app/Entitlements.plist /Applications/LiNUZE.app/
 ldid -S/Applications/LiNUZE.app/Entitlements.plist /usr/sbin/usbmuxd
 
-while ps aux | grep -v grep | grep usbmuxd > /dev/null; do
-  killall usbmuxd
-done
+launchctl unload /Library/LaunchDaemons/org.libimobiledevice.usbmuxd.plist
+launchctl load /Library/LaunchDaemons/org.libimobiledevice.usbmuxd.plist
 
 uicache > /dev/null 2>&1
 exit 0

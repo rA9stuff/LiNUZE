@@ -1,11 +1,11 @@
-Package: com.ra9stuff.LiNUZE
-Name: LiNUZE
-Version: 0.DEV-BETA
+Package: com.ra9stuff.LiNUZE.nightly
+Name: LiNUZE Nightly
+Version: 1.0
 Architecture: iphoneos-arm
-Description: LiNUZE allows managing iOS devices using jailbroken iOS devices.
+Description: Manage iOS devices using jailbroken iOS devices.
 Maintainer: rA9stuff
 Author: rA9stuff
-Section: Utilities
-Depends: firmware (>= 12.0), libusbmuxd6, libusb-1.0-0, libirecovery3, libplist3, libimobiledevice6, usbmuxd, ldid
+Section: Applications
+Depends: firmware (>= 12.0), firmware (<< 16.0), libusbmuxd6, libusb-1.0-0, libirecovery3, libplist3, libimobiledevice6, usbmuxd, ldid
 Icon: https://raw.githubusercontent.com/ra9labs/repo/main/Icons/LiNUZE_icon_120.png
 SileoDepiction: https://raw.githubusercontent.com/ra9labs/repo/main/sileo_depiction

@@ -49,11 +49,12 @@ int LDD::checkConnection() {
 
 int LDD::sendFile(const char* filename, bool withReconnect) {
 
+    printf("[%s]: attempting to send %s\n", __func__, filename);
     if (withReconnect) {
-        printf("[%s]: [!] reconnect requested, freeing pointer and calling openConnection()\n", __func__);
+        printf("[%s]: reconnect requested, freeing pointer and calling openConnection()\n", __func__);
         this -> freeDevice();
         usleep(500000);
-        if (this -> openConnection(5) != 0) {
+        if (this -> openConnection(10) != 0) {
             printf("[%s]: error connecting to device, stopping here\n", __func__);
             return -1;
         }
@@ -65,30 +66,37 @@ int LDD::sendFile(const char* filename, bool withReconnect) {
     irecv_error_t stat = irecv_send_file(this -> client, filename, 1);
     usleep(500000);
     
-    if (stat == IRECV_E_SUCCESS)
+    if (stat == IRECV_E_SUCCESS) {
+        printf("[%s] Successfully sent file: %s\n", __func__, filename);
         return 0;
-    else if (stat == IRECV_E_USB_UPLOAD && strcmp(filename, "/dev/null") == 0)
+    }
+    else if (stat == IRECV_E_USB_UPLOAD && strcmp(filename, "/dev/null") == 0) {
+        printf("[%s] Successfully reset device state\n", __func__);
         return 0;
-    else
-        return -1;
+    }
+    printf("[%s] Error sending file: %s\n", __func__, filename);
     return -1;
 }
 
 int LDD::sendCommand(const char *cmd, bool withReconnect) {
     
+    printf("[%s]: attempting to send %s\n", __func__, cmd);
     if (withReconnect) {
-        printf("[%s]: [!] reconnect requested, freeing pointer and calling openConnection()\n", __func__);
+        printf("[%s]: reconnect requested, freeing pointer and calling openConnection()\n", __func__);
         this -> freeDevice();
         usleep(500000);
-        if (this -> openConnection(5) != 0) {
+        if (this -> openConnection(10) != 0) {
             printf("[%s]: error connecting to device, stopping here\n", __func__);
             return -1;
         }
     }
     
     irecv_error_t stat = irecv_send_command(this -> client, cmd);
-    if (stat == IRECV_E_SUCCESS)
+    if (stat == IRECV_E_SUCCESS) {
+        printf("[%s] Successfully sent command: %s\n", __func__, cmd);
         return 0;
+    }
+    printf("[%s] Error sending command: %s\n", __func__, cmd);
     return -1;
 }
 

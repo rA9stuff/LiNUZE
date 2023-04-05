@@ -154,7 +154,7 @@ float cpu_usage()
         while (true) {
             float usage = cpu_usage();
             main_thread {
-                [[self cpu_usage_label] setText:[NSString stringWithFormat:@"cpu usage: %g%%", usage]];
+                [[ipad_vc cpu_usage_label] setText:[NSString stringWithFormat:@"cpu usage: %g%%", usage]];
             });
             sleep(1);
         }
@@ -549,7 +549,7 @@ USBUtils* usbVC;
     if (didAlreadyStartMonitoring)
         return;
     didAlreadyStartMonitoring = true;
-    //[self monitorCPUusage];
+    [self monitorCPUusage];
     background_thread {
         usbVC = [[USBUtils alloc] init];
         [usbVC startMonitoringUSBDevices:self maindevptr:&maindevptr normaldevptr:&normaldevptr lockdownptr:&lockdownptr normaldevname:&normaldevname];

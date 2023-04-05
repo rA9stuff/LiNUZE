@@ -458,7 +458,7 @@
 					"$(HOME)/ipwnder_lite",
 					"$(HOME)/gaster",
 				);
-				MARKETING_VERSION = "developer release";
+				MARKETING_VERSION = 0.1;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-force_load",
@@ -533,7 +533,7 @@
 					"$(HOME)/ipwnder_lite",
 					"$(HOME)/gaster",
 				);
-				MARKETING_VERSION = "developer release";
+				MARKETING_VERSION = 0.1;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"-force_load",
