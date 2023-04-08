@@ -18,8 +18,8 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
-    if (checkDaemon() != 0) {
+    if (false) {
+   // if (checkDaemon() != 0) {
         printf("[*] waiting for launchd to start usbmuxd...\n");
         background_thread {
             __block UIAlertController *alertController = NULL;
