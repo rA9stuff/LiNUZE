@@ -31,8 +31,8 @@ create_symlink /usr/lib/libirecovery.3.dylib /usr/lib/libirecovery-1.0.3.dylib
 create_symlink /usr/lib/libirecovery-1.0.3.dylib /usr/lib/libirecovery.3.dylib
 
 ldid -S /Applications/LiNUZE.app/LiNUZE
-ldid -S/Applications/LiNUZE.app/Entitlements.plist /Applications/LiNUZE.app/
-ldid -S/Applications/LiNUZE.app/Entitlements.plist /usr/sbin/usbmuxd
+ldid -S/Applications/LiNUZE.app/Entitlements.xml /Applications/LiNUZE.app/
+ldid -S/Applications/LiNUZE.app/Entitlements.xml /usr/sbin/usbmuxd
 
 launchctl unload /Library/LaunchDaemons/org.libimobiledevice.usbmuxd.plist
 launchctl load /Library/LaunchDaemons/org.libimobiledevice.usbmuxd.plist
