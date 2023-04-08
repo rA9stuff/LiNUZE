@@ -560,8 +560,7 @@ USBUtils* usbVC;
     free(landingcheck);
     
     if ([res isEqualToString:@"1"]) {
-        if (false) {
-        //if (checkDaemon() != 0) {
+        if (checkDaemon() != 0) {
             printf("[*] waiting for launchd to start usbmuxd...\n");
             background_thread {
                 __block UIAlertController *alertController = NULL;
