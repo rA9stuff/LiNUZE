@@ -5,7 +5,7 @@ A jailbreak app to manage iDevices using jailbroken iDevices.
 [![Stars](https://img.shields.io/github/stars/rA9stuff/linuze?style=for-the-badge)](https://github.com/rA9stuff/LiNUZE/stargazers)
 [![Licence](https://img.shields.io/github/license/rA9stuff/linuze?style=for-the-badge)](https://github.com/rA9stuff/LiNUZE/blob/master/LICENSE.md)
 <br/>
-<img align="right" src="https://i.imgur.com/bGJLzqv.png" width="130px" height="130px">
+<img align="center" src="https://media.havoc.app/6418de029209db9d61fe6037">
 ### Downloads
 * [Latest public release](https://github.com/rA9stuff/LiNUZE/releases)
 
