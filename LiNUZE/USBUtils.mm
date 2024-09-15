@@ -197,7 +197,7 @@ extern ViewController* iphone_vc;
 
 - (BOOL) detectTrapRemoval {
     @autoreleasepool {
-        CFMutableDictionaryRef matchingDict = IOServiceMatching(kIOUSBDeviceClassName);
+        CFMutableDictionaryRef matchingDict = IOServiceMatching("IOUSBHostDevice");
         io_iterator_t iter;
         IOServiceGetMatchingServices(kIOMasterPortDefault, matchingDict, &iter);
         io_service_t usbDevice;
@@ -272,7 +272,7 @@ static void DeviceRemoved(void *refCon, io_iterator_t iterator) {
 io_iterator_t detectionIterator, removalIterator;
 
 - (void) registerForUSBDeviceNotifications {
-    CFMutableDictionaryRef matchingDict = IOServiceMatching(kIOUSBDeviceClassName);
+    CFMutableDictionaryRef matchingDict = IOServiceMatching("IOUSBHostDevice");
     if (!matchingDict) {
         NSLog(@"Unable to create matching dictionary for USB device detection");
         return;
@@ -289,7 +289,7 @@ io_iterator_t detectionIterator, removalIterator;
     }
     [self USBDeviceDetectedCallback:NULL iterator: detectionIterator];
     
-    CFMutableDictionaryRef removalMatchingDict = IOServiceMatching(kIOUSBDeviceClassName);
+    CFMutableDictionaryRef removalMatchingDict = IOServiceMatching("IOUSBHostDevice");
     if (!removalMatchingDict) {
         NSLog(@"Unable to create matching dictionary for USB device detection");
         return;
