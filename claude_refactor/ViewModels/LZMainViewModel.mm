@@ -185,10 +185,9 @@ static float _currentCPUUsage(void) {
             UIColor *color = [UIColor whiteColor];
             if ([s containsString:@"[31m"]) color = [UIColor redColor];
             else if ([s containsString:@"[32m"]) color = [UIColor greenColor];
-            s = [[[s stringByReplacingOccurrencesOfString:@"[31m" withString:@""]
-                      stringByReplacingOccurrencesOfString:@"[32m" withString:@""]
-                      stringByReplacingOccurrencesOfString:@"[39m" withString:@""]
-                  copy] mutableCopy];
+            s = [[s stringByReplacingOccurrencesOfString:@"[31m" withString:@""]
+                     stringByReplacingOccurrencesOfString:@"[32m" withString:@""]
+                     stringByReplacingOccurrencesOfString:@"[39m" withString:@""];
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self _appendLog:s color:color];
             });

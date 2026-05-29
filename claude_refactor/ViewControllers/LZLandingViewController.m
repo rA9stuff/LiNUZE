@@ -3,8 +3,6 @@
 #import "LZLandingViewController.h"
 
 @interface LZLandingViewController ()
-// Retained reference so the alert can be dismissed on the main thread.
-@property (nonatomic, strong) UIAlertController *daemonWaitAlert;
 @end
 
 @implementation LZLandingViewController
@@ -61,8 +59,8 @@
 }
 
 - (void)_daemonReady:(NSNotification *)note {
-    [self.daemonWaitAlert dismissViewControllerAnimated:YES completion:nil];
-    self.daemonWaitAlert = nil;
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+        name:LZLandingViewModelDaemonReadyNotification object:nil];
 }
 
 // ---------------------------------------------------------------------------

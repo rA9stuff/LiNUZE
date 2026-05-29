@@ -73,10 +73,10 @@ static LZDeviceInfo *_deviceInfoFromLDD(LDD *dev) {
 }
 
 // ---------------------------------------------------------------------------
-// C-level IOKit callbacks – bridge to the ObjC instance stored in refCon.
+// C-level IOKit callbacks – forward declarations so they can be passed as
+// function pointers in _registerForUSBDeviceNotifications below.
 // ---------------------------------------------------------------------------
 
-@class LZDeviceManager;
 static void _DeviceAdded(void *refCon, io_iterator_t iterator);
 static void _DeviceRemoved(void *refCon, io_iterator_t iterator);
 
@@ -96,11 +96,9 @@ static void _DeviceRemoved(void *refCon, io_iterator_t iterator);
 // IOKit iterators – owned by the monitoring run loop
 @property (nonatomic) io_iterator_t detectionIterator;
 @property (nonatomic) io_iterator_t removalIterator;
-@property (nonatomic, strong) NSThread *ioKitNotifPort; // just for lifetime
 @property (nonatomic) IONotificationPortRef notificationPort;
 
 // Device state
-@property (nonatomic) BOOL deviceDisconnecting; // replaces global "deadDevice"
 @property (nonatomic) LDD *dfuDevice;           // heap-allocated, managed here
 @property (nonatomic) idevice_t normalDevice;
 @property (nonatomic) lockdownd_client_t lockdownClient;
@@ -289,10 +287,6 @@ static void _DeviceRemoved(void *refCon, io_iterator_t iterator) {
 }
 
 - (void)_connectDFUDevice:(NSString *)usbName {
-    dispatch_async(_stateQueue, ^{
-        self.deviceDisconnecting = NO;
-    });
-
     [self _delegateOnMain:^{
         id<LZDeviceManagerDelegate> d = self.delegate;
         // Notify connecting state via log
@@ -421,7 +415,6 @@ static void _DeviceRemoved(void *refCon, io_iterator_t iterator) {
         [self _log:[NSString stringWithFormat:@"Lost device: %@", name] color:[UIColor whiteColor]];
 
         dispatch_async(_stateQueue, ^{
-            self.deviceDisconnecting = YES;
             self.isDeviceConnected   = NO;
             self.connectedDeviceInfo = nil;
             [self _freeDFUDevice];

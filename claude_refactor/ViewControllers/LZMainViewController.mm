@@ -6,7 +6,6 @@
 #import "LZMainViewController.h"
 #import "LZLandingViewController.h"
 #import "LZLandingViewModel.h"
-#import "LZPreferencesService.h"
 
 @interface LZMainViewController ()
 @property (nonatomic, strong) LZLandingViewModel *landingViewModel;
